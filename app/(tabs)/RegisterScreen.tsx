@@ -1,6 +1,12 @@
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
+import {
+  Button,
+  Text,
+  TextInput,
+  useTheme,
+} from 'react-native-paper';
 import AuthService from '../../services/AuthService';
 
 export default function RegisterScreen() {
@@ -8,6 +14,7 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const theme = useTheme();
 
   const handleRegister = async () => {
     if (!username || !email || !password || !phone) {
@@ -30,45 +37,54 @@ export default function RegisterScreen() {
       <Text style={styles.title}>Đăng Ký</Text>
 
       <TextInput
-        style={styles.input}
-        placeholder="Tên người dùng"
+        label="Tên người dùng"
         value={username}
         onChangeText={setUsername}
-        placeholderTextColor="#4CAF50"
+        mode="outlined"
+        style={styles.input}
       />
 
       <TextInput
-        style={styles.input}
-        placeholder="Email"
-        autoCapitalize="none"
+        label="Email"
         value={email}
         onChangeText={setEmail}
-        placeholderTextColor="#4CAF50"
+        autoCapitalize="none"
+        keyboardType="email-address"
+        mode="outlined"
+        style={styles.input}
       />
 
       <TextInput
-        style={styles.input}
-        placeholder="Số điện thoại"
-        keyboardType="phone-pad"
+        label="Số điện thoại"
         value={phone}
         onChangeText={setPhone}
-        placeholderTextColor="#4CAF50"
+        keyboardType="phone-pad"
+        mode="outlined"
+        style={styles.input}
       />
 
       <TextInput
-        style={styles.input}
-        placeholder="Mật khẩu"
-        secureTextEntry
+        label="Mật khẩu"
         value={password}
         onChangeText={setPassword}
-        placeholderTextColor="#4CAF50"
+        secureTextEntry
+        mode="outlined"
+        style={styles.input}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Đăng ký</Text>
-      </TouchableOpacity>
+      <Button
+        mode="contained"
+        onPress={handleRegister}
+        style={styles.button}
+        contentStyle={{ paddingVertical: 10 }}
+      >
+        Đăng ký
+      </Button>
 
-      <Text style={styles.switchText} onPress={() => router.push('/LoginScreen')}>
+      <Text
+        style={styles.switchText}
+        onPress={() => router.push('/LoginScreen')}
+      >
         Đã có tài khoản? <Text style={styles.loginLink}>Đăng nhập</Text>
       </Text>
     </View>
@@ -80,36 +96,22 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     justifyContent: 'center',
-    backgroundColor: '#F0FFF0', // nền nhạt xanh lá
+    backgroundColor: '#F0FFF0', 
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 30,
     textAlign: 'center',
-    color: '#388E3C', // xanh lá đậm
+    color: '#388E3C',
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#4CAF50',
-    borderRadius: 8,
     marginBottom: 16,
-    padding: 12,
-    fontSize: 16,
-    color: '#2E7D32',
-    backgroundColor: '#FFFFFF',
   },
   button: {
-    backgroundColor: '#4CAF50',
-    padding: 14,
-    borderRadius: 8,
-    alignItems: 'center',
     marginTop: 10,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 16,
+    borderRadius: 8,
+    backgroundColor: '#4CAF50',
   },
   switchText: {
     marginTop: 24,
