@@ -12,12 +12,19 @@ import {
 import db from "../../db.json";
 import AlbumDetail from "./AlbumDetail";
 
+interface Album {
+  id: string;
+  title: string;
+  artist: string;
+  imageKey: string;
+}
+
 const images: Record<string, any> = {
   cover: require("../../assets/images/cover.png"),
 };
 
 const SavedAlbums: React.FC = () => {
-    const [albums, setAlbums] = useState([]);
+    const [albums, setAlbums] = useState<Album[]>([]);
     const [selectedAlbum, setSelectedAlbum] = useState(null);
 
   useEffect(() => {

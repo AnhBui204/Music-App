@@ -11,17 +11,21 @@ import {
 } from "react-native";
 import db from "../../db.json";
 
+type Props = {
+  navigateToPlayScreen: (song: any) => void;
+};
 
 const images: Record<string, any> = {
   cover: require("../../assets/images/cover.png"),
 };
 
-const FavoriteMusic: React.FC = () => {
+const FavoriteMusic: React.FC<Props> = ({ navigateToPlayScreen }) => {
   const [favoriteSongs, setFavoriteSongs] = useState([]);
 
   useEffect(() => {
     setFavoriteSongs(db.favorites);
   }, []);
+
 
   return (
     <View style={styles.container}>
@@ -61,31 +65,25 @@ const FavoriteMusic: React.FC = () => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.songItem}>
-            <Image source={images[item.imageKey]} style={styles.cover} />
-            <View style={styles.info}>
-              <Text style={styles.songTitle} numberOfLines={1}>
-                {item.title}
-              </Text>
-              <Text style={styles.artist}>{item.artist}</Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 12,
-                marginRight: 10,
-              }}
+            <TouchableOpacity
+              onPress={() => navigateToPlayScreen(item)}
+              style={styles.songItem}
             >
-              <TouchableOpacity>
-                <FontAwesome name="thumbs-up" size={22} color="#1DB954" />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <FontAwesome name="thumbs-down" size={22} color="#888" />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Ionicons name="ellipsis-vertical" size={20} color="#fff" />
-              </TouchableOpacity>
-            </View>
+              <Image source={images[item.imageKey]} style={styles.cover} />
+              <View style={styles.info}>
+                <Text style={styles.songTitle} numberOfLines={1}>
+                  {item.title}
+                </Text>
+                <Text style={styles.artist}>{item.artist}</Text>
+              </View>
+
+              <View style={styles.iconGroup}>
+                <FontAwesome name="thumbs-up" size={22} color="#1DB954" style={styles.icon} />
+                <FontAwesome name="thumbs-down" size={22} color="#888" style={styles.icon} />
+                <Ionicons name="ellipsis-vertical" size={20} color="#fff" style={styles.icon} />
+              </View>
+            </TouchableOpacity>
+
           </View>
         )}
       />
@@ -101,6 +99,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#121212",
     padding: 20,
   },
+  iconGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 10,
+    gap: 12, // nếu React Native của bạn không hỗ trợ 'gap', hãy thay bằng `marginRight`
+  },
+  icon: {
+    marginHorizontal: 6,
+  },
+
   headerBox: {
     alignItems: "center",
     marginBottom: 40,

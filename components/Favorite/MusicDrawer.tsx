@@ -2,11 +2,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useRef, useState } from 'react';
 import {
-    DrawerLayoutAndroid,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  DrawerLayoutAndroid,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 import DrawerContent from '../Favorite/DrawerContent';
@@ -18,7 +19,10 @@ export default function MusicDrawer() {
   const drawer = useRef<DrawerLayoutAndroid>(null);
   const [screen, setScreen] = useState<'Favorite' | 'SavedAlbums' | 'PlayScreen'>('Favorite');
 
-  const navigationView = () => (
+  const [currentSong, setCurrentSong] = useState(null);
+
+
+   const navigationView = () => (
     <DrawerContent
       navigate={setScreen}
       closeDrawer={() => drawer.current?.closeDrawer()}
@@ -28,52 +32,113 @@ export default function MusicDrawer() {
   const getScreenTitle = () => {
     switch (screen) {
       case 'Favorite':
-        return '⭐ Favorite Music';
+        return 'Favorite Music';
       case 'SavedAlbums':
-        return '📀 Saved Albums';
+        return 'Saved Albums';
       case 'PlayScreen':
-        return '▶️ Now Playing';
+        return 'Now Playing';
       default:
         return '';
     }
   };
 
-  return (
-    <DrawerLayoutAndroid
-      ref={drawer}
-      drawerWidth={250}
-      drawerPosition="left"
-      renderNavigationView={navigationView}
-    >
-      <View style={{ flex: 1 }}>
-        <View style={styles.topBar}>
-          <TouchableOpacity onPress={() => drawer.current?.openDrawer()}>
-            <Ionicons name="menu" size={30} color="#000" />
-          </TouchableOpacity>
-          <Text style={styles.header}>{getScreenTitle()}</Text>
-        </View>
+  const getScreenIcon = () => {
+    switch (screen) {
+      case 'Favorite':
+        return '♥️';
+      case 'SavedAlbums':
+        return '💿';
+      case 'PlayScreen':
+        return '🎵';
+      default:
+        return '';
+    }
+  };
 
-        <View style={{ flex: 1 }}>
-          {screen === 'Favorite' && <FavoriteMusic />}
-          {screen === 'SavedAlbums' && <SavedAlbums />}
-          {screen === 'PlayScreen' && <PlayScreen />}
+
+   return (
+    <>
+      <StatusBar barStyle="light-content" backgroundColor="#121212" />
+      <DrawerLayoutAndroid
+        ref={drawer}
+        drawerWidth={280}
+        drawerPosition="left"
+        renderNavigationView={navigationView}
+        drawerBackgroundColor="#121212"
+      >
+        <View style={styles.container}>
+          <View style={styles.topBar}>
+            <TouchableOpacity 
+              style={styles.menuButton}
+              onPress={() => drawer.current?.openDrawer()}
+            >
+              <Ionicons name="menu" size={28} color="#fff" />
+            </TouchableOpacity>
+            <View style={styles.headerContainer}>
+              <Text style={styles.headerIcon}>{getScreenIcon()}</Text>
+              <Text style={styles.header}>{getScreenTitle()}</Text>
+            </View>
+          </View>
+
+          <View style={styles.content}>
+            {screen === 'Favorite' && (
+              <FavoriteMusic
+                navigateToPlayScreen={(song) => {
+                  setCurrentSong(song);
+                  setScreen('PlayScreen');
+                }}
+              />
+            )}
+            {screen === 'SavedAlbums' && <SavedAlbums />}
+            {screen === 'PlayScreen' && (
+              <PlayScreen
+                song={currentSong}
+                goBack={() => setScreen("Favorite")}
+              />
+            )}
+          </View>
         </View>
-      </View>
-    </DrawerLayoutAndroid>
+      </DrawerLayoutAndroid>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginLeft: 12,
+  container: {
+    flex: 1,
+    backgroundColor: '#121212',
   },
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
-    marginBottom: 10,
-    marginTop: 40,
+    paddingTop: 10,
+    paddingBottom: 15,
+    backgroundColor: '#121212',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.1)',
+  },
+  menuButton: {
+    padding: 8,
+    borderRadius: 20,
+    marginRight: 12,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  headerIcon: {
+    fontSize: 20,
+    marginRight: 8,
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  content: {
+    flex: 1,
+    backgroundColor: '#121212',
   },
 });

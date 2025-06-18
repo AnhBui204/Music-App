@@ -1,41 +1,53 @@
-// file: components/PlayScreen.tsx
-import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { Audio } from "expo-av";
 import React, { useEffect, useRef, useState } from "react";
 import {
-    Animated, Easing,
+    Animated,
+    Easing,
+    FlatList,
     Image,
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
 } from "react-native";
+import db from "../../db.json";
 
-
-
-const images = {
+// Constants
+const IMAGES = {
     cover: require("../../assets/images/cover1.png"),
+    cdDisk: require("../../assets/images/cd_disk.png"),
 };
 
-const PlayScreen = () => {
-    const song = {
-        title: "Music Name",
-        artist: "Music Artist",
-        imageKey: "cover",
-        audioUrl: "music.mp3",
-    };
+const PLAY_MODES = {
+    REPEAT_ONE: "repeatOne",
+    REPEAT_ALL: "repeatAll",
+    SHUFFLE: "shuffle",
+};
 
-
-
+const PlayScreen = ({ song: initialSong, goBack }) => {
+    // State Management
     const [isPlaying, setIsPlaying] = useState(false);
-    const [playbackInstance, setPlaybackInstance] = useState(null);
     const [position, setPosition] = useState(0);
     const [duration, setDuration] = useState(0);
-    const [modeVisible, setModeVisible] = useState(false);
-    const [mode, setMode] = useState("repeatOne");
-    const soundRef = useRef(null);
+    const [mode, setMode] = useState(PLAY_MODES.REPEAT_ONE);
+    const [isLiked, setIsLiked] = useState(false);
+    const [currentSong, setCurrentSong] = useState(initialSong);
+    const [songs, setSongs] = useState([]);
 
+    // Refs
+    const soundRef = useRef(null);
+    const spinValue = useRef(new Animated.Value(0)).current;
+    const rotationRef = useRef(null);
+
+    // Animation Setup
+    const spin = spinValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '360deg'],
+    });
+
+    // Effects
     useEffect(() => {
         loadAudio();
         return () => {
@@ -45,14 +57,40 @@ const PlayScreen = () => {
         };
     }, []);
 
+    useEffect(() => {
+        if (isPlaying) {
+            rotateDisc();
+        } else if (rotationRef.current) {
+            rotationRef.current.stop();
+        }
+    }, [isPlaying]);
+
+    useEffect(() => {
+        setSongs(db.favorites);
+    }, []);
+
+
+    // Audio Functions
     const loadAudio = async () => {
+        if (soundRef.current) {
+            await soundRef.current.unloadAsync();
+        }
+
         const { sound, status } = await Audio.Sound.createAsync(
             require("../../assets/music.mp3"),
-            { shouldPlay: false },
+            { shouldPlay: true },
             onPlaybackStatusUpdate
         );
         soundRef.current = sound;
         setDuration(status.durationMillis);
+        setIsPlaying(true);
+    };
+
+    const handleSongSelect = async (newSong) => {
+        setCurrentSong(newSong);
+        setPosition(0);
+        // Reset và load audio mới
+        await loadAudio();
     };
 
     const onPlaybackStatusUpdate = status => {
@@ -77,35 +115,29 @@ const PlayScreen = () => {
         }
     };
 
-    const [isLiked, setIsLiked] = useState(false);
-
-
+    // Helper Functions
     const handleTrackEnd = async () => {
         switch (mode) {
-            case "repeatOne":
+            case PLAY_MODES.REPEAT_ONE:
                 await soundRef.current.setPositionAsync(0);
                 await soundRef.current.playAsync();
                 break;
-            case "repeatAll":
-                // Add logic to move to next song
+            case PLAY_MODES.REPEAT_ALL:
+                // Add logic for next song
                 break;
-            case "shuffle":
-                // Add logic to play random song
+            case PLAY_MODES.SHUFFLE:
+                // Add logic for random song
                 break;
         }
     };
 
     const toggleMode = () => {
         setMode((prev) => {
-            if (prev === "repeatAll") return "repeatOne";
-            if (prev === "repeatOne") return "shuffle";
-            return "repeatAll";
+            if (prev === PLAY_MODES.REPEAT_ALL) return PLAY_MODES.REPEAT_ONE;
+            if (prev === PLAY_MODES.REPEAT_ONE) return PLAY_MODES.SHUFFLE;
+            return PLAY_MODES.REPEAT_ALL;
         });
     };
-
-    const spinValue = useRef(new Animated.Value(0)).current;
-
-    const rotationRef = useRef(null);
 
     const rotateDisc = () => {
         rotationRef.current = Animated.loop(
@@ -119,25 +151,6 @@ const PlayScreen = () => {
         rotationRef.current.start();
     };
 
-    useEffect(() => {
-        if (isPlaying) {
-            rotateDisc();
-        } else {
-            if (rotationRef.current) {
-                rotationRef.current.stop();
-            }
-        }
-    }, [isPlaying]);
-
-
-    const spin = spinValue.interpolate({
-        inputRange: [0, 1],
-        outputRange: ['0deg', '360deg'],
-    });
-
-
-
-
     const formatTime = ms => {
         const totalSeconds = Math.floor(ms / 1000);
         const minutes = Math.floor(totalSeconds / 60);
@@ -145,31 +158,130 @@ const PlayScreen = () => {
         return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
     };
 
+    const skipToPreviousSong = () => {
+        const currentIndex = songs.findIndex(song => song.id === currentSong.id);
+        let newIndex;
+        
+        if (currentIndex <= 0) {
+            newIndex = songs.length - 1; // Quay lại bài cuối nếu đang ở bài đầu
+        } else {
+            newIndex = currentIndex - 1;
+        }
+        
+        handleSongSelect(songs[newIndex]);
+    };
+
+    const skipToNextSong = () => {
+        const currentIndex = songs.findIndex(song => song.id === currentSong.id);
+        let newIndex;
+        
+        if (currentIndex >= songs.length - 1) {
+            newIndex = 0; // Quay lại bài đầu nếu đang ở bài cuối
+        } else {
+            newIndex = currentIndex + 1;
+        }
+        
+        handleSongSelect(songs[newIndex]);
+    };
+
+    // Render Components
+    const renderHeader = () => (
+        <View style={styles.header}>
+            <TouchableOpacity style={styles.backBtn} onPress={goBack}>
+                <Ionicons name="chevron-back" size={28} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Đang phát</Text>
+            <View style={{ width: 30 }} />
+        </View>
+    );
+
+    const renderCoverArt = () => (
+        <View style={styles.coverWrapper}>
+            <Animated.Image
+                source={IMAGES.cdDisk}
+                style={[styles.cdDisk, { transform: [{ rotate: spin }] }]}
+            />
+            <Image source={IMAGES[currentSong.imageKey]} style={styles.coverOnDisk} />
+        </View>
+    );
+
+    const renderControls = () => (
+        <View style={styles.controls}>
+            <TouchableOpacity onPress={toggleMode}>
+                <MaterialIcons
+                    name={mode === PLAY_MODES.REPEAT_ONE ? "repeat-one" :
+                        mode === PLAY_MODES.REPEAT_ALL ? "repeat" : "shuffle"}
+                    size={28}
+                    color="#1DB954"
+                />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={skipToPreviousSong}>
+                <Ionicons name="play-skip-back" size={34} color="#bbb" />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={togglePlay} style={styles.playBtn}>
+                <Ionicons name={isPlaying ? "pause" : "play"} size={40} color="#000" />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={skipToNextSong}>
+                <Ionicons name="play-skip-forward" size={34} color="#bbb" />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setIsLiked(!isLiked)}>
+                <Ionicons name="thumbs-up" size={28} color={isLiked ? "#1DB954" : "#bbb"} />
+            </TouchableOpacity>
+        </View>
+    );
+
+    const renderSongList = () => (
+        <View style={styles.songListContainer}>
+            <Text style={styles.listTitle}>Danh sách phát</Text>
+            <FlatList
+                data={songs}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                    <TouchableOpacity
+                        style={[
+                            styles.songListItem,
+                            currentSong.id === item.id && styles.activeSong
+                        ]}
+                        onPress={() => handleSongSelect(item)}
+                    >
+                        <Image
+                            source={IMAGES[item.imageKey]}
+                            style={styles.songThumb}
+                        />
+                        <View style={styles.songInfo}>
+                            <Text
+                                style={[
+                                    styles.songListTitle,
+                                    currentSong.id === item.id && styles.activeText
+                                ]}
+                                numberOfLines={1}
+                            >
+                                {item.title}
+                            </Text>
+                            <Text style={styles.songListArtist}>{item.artist}</Text>
+                        </View>
+                        {currentSong.id === item.id && (
+                            <Ionicons name="musical-notes" size={20} color="#1DB954" />
+                        )}
+                    </TouchableOpacity>
+                )}
+                style={styles.songList}
+            />
+        </View>
+    );
+
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity style={styles.backBtn}>
-                    <Ionicons name="chevron-back" size={28} color="#fff" />
-                </TouchableOpacity>
-                <Text style={styles.headerTitle}>Đang phát</Text>
-                <View style={{ width: 30 }} />
-            </View>
-
-            <View style={styles.coverWrapper}>
-                <Animated.Image
-                    source={require("../../assets/images/cd_disk.png")}
-                    style={[styles.cdDisk, { transform: [{ rotate: spin }] }]}
-                />
-                <Image
-                    source={images[song.imageKey]}
-                    style={styles.coverOnDisk}
-                />
-            </View>
-
+            {renderHeader()}
+            {renderCoverArt()}
 
             <View style={styles.infoBox}>
-                <Text style={styles.songTitle}>{song.title}</Text>
-                <Text style={styles.artist}>{song.artist}</Text>
+                <Text style={styles.songTitle}>{currentSong.title}</Text>
+                <Text style={styles.artist}>{currentSong.artist}</Text>
             </View>
 
             <View style={styles.progressBarWrapper}>
@@ -188,145 +300,166 @@ const PlayScreen = () => {
                 </View>
             </View>
 
-            <View style={styles.controls}>
-                <TouchableOpacity onPress={toggleMode}>
-                    {mode === "repeatAll" && (
-                        <Feather name="repeat" size={28} color="#1DB954" />
-                    )}
-                    {mode === "repeatOne" && (
-                        <MaterialIcons name="repeat-one" size={28} color="#1DB954" />
-                    )}
-                    {mode === "shuffle" && (
-                        <MaterialIcons name="shuffle" size={28} color="#1DB954" />
-                    )}
-                </TouchableOpacity>
-
-                <TouchableOpacity>
-                    <Ionicons name="play-skip-back" size={34} color="#bbb" />
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={togglePlay} style={styles.playBtn}>
-                    <Ionicons name={isPlaying ? "pause" : "play"} size={40} color="#000" />
-                </TouchableOpacity>
-
-                <TouchableOpacity>
-                    <Ionicons name="play-skip-forward" size={34} color="#bbb" />
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => setIsLiked(!isLiked)}>
-                    <Ionicons
-                        name="thumbs-up"
-                        size={28}
-                        color={isLiked ? "#1DB954" : "#bbb"}
-                    />
-                </TouchableOpacity>
-
-            </View>
-
-
+            {renderControls()}
+            {renderSongList()}
         </View>
     );
 };
 
-export default PlayScreen;
-
 const styles = StyleSheet.create({
-    cdDisk: {
-        width: 340,
-        height: 340,
-        borderRadius: 170,
-        position: "absolute",
-        opacity: 0.6,
-    },
-    coverOnDisk: {
-        width: 190,
-        height: 190,
-        borderRadius: 100,
-        zIndex: 1,
-    },
-
-    coverWrapper: {
-        alignItems: "center",
-        justifyContent: "center",
-        marginVertical: 40,
-        height: 340,
-    },
-
     container: {
         flex: 1,
         backgroundColor: "#121212",
         paddingTop: 50,
-        paddingHorizontal: 20,
     },
+    
+    // Header styles
     header: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+        paddingHorizontal: 20,
+        marginBottom: 20,
+    },
+    headerTitle:{
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "#fff",
     },
     backBtn: {
-        padding: 8,
+        padding: 10,
     },
-    headerTitle: {
-        color: "#fff",
-        fontSize: 18,
-        fontWeight: "bold",
+    // Cover art section
+    coverWrapper: {
+        alignItems: "center",
+        justifyContent: "center",
+        height: 260,
+        marginBottom: 25,
+    },
+    cdDisk: {
+        width: 260,
+        height: 260,
+        borderRadius: 130,
+        position: "absolute",
+        opacity: 0.6,
+    },
+    coverOnDisk: {
+        width: 150,
+        height: 150,
+        borderRadius: 75,
+        zIndex: 1,
+        borderWidth: 4,
+        borderColor: 'rgba(255,255,255,0.1)',
     },
 
-    cover: {
-        width: 300,
-        height: 300,
-        borderRadius: 20,
-    },
+    // Song info section
     infoBox: {
         alignItems: "center",
-        marginVertical: 20,
+        paddingHorizontal: 40,
+        marginBottom: 20,
     },
     songTitle: {
-        fontSize: 24,
-        fontWeight: "bold",
+        fontSize: 22,
+        fontWeight: "700",
         color: "#fff",
+        textAlign: 'center',
     },
     artist: {
-        fontSize: 18,
-        color: "#ccc",
+        fontSize: 16,
+        color: "#b3b3b3",
         marginTop: 6,
     },
-    controls: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginTop: 30,
-        paddingHorizontal: 10,
-    },
-    playBtn: {
-        backgroundColor: "#1DB954",
-        padding: 18,
-        borderRadius: 50,
-    },
+
+    // Progress bar section
     progressBarWrapper: {
-        marginTop: 10,
+        paddingHorizontal: 20,
+        marginBottom: 15,
     },
     timeRow: {
         flexDirection: "row",
         justifyContent: "space-between",
         paddingHorizontal: 10,
+        marginTop: 8,
     },
     timeText: {
-        color: "#ccc",
+        color: "#b3b3b3",
         fontSize: 12,
     },
-    modeSelector: {
-        marginTop: 20,
-        backgroundColor: "#1e1e1e",
-        borderRadius: 10,
-        padding: 10,
+
+    // Controls section
+    controls: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingHorizontal: 30,
+        marginBottom: 20,
     },
-    modeText: {
-        color: "#bbb",
-        paddingVertical: 6,
+    playBtn: {
+        backgroundColor: "#1DB954",
+        padding: 16,
+        borderRadius: 40,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 4.65,
+        elevation: 8,
     },
-    activeMode: {
-        color: "#1DB954",
-        fontWeight: "bold",
+
+    // Song list section
+    songListContainer: {
+        flex: 1,
+        backgroundColor: '#1e1e1e',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        paddingTop: 20,
+        paddingHorizontal: 20,
     },
+    listTitle: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+        marginBottom: 15,
+    },
+    songList: {
+        flex: 1,
+    },
+    songListItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 8,
+        paddingHorizontal: 15,
+        borderRadius: 8,
+        marginBottom: 4,
+    },
+    activeSong: {
+        backgroundColor: '#282828',
+    },
+    songThumb: {
+        width: 40,
+        height: 40,
+        borderRadius: 6,
+        marginRight: 12,
+    },
+    songInfo: {
+        flex: 1,
+    },
+    songListTitle: {
+        color: '#fff',
+        fontSize: 14,
+        fontWeight: '500',
+    },
+    activeText: {
+        color: '#1DB954',
+        fontWeight: '600',
+    },
+    songListArtist: {
+        color: '#b3b3b3',
+        fontSize: 12,
+        marginTop: 4,
+    }
 });
+
+export default PlayScreen;
