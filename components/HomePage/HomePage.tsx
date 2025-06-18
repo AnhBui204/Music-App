@@ -1,7 +1,89 @@
+import Header from '@/components/Header/Header';
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Header from "@/components/Header/Header";
+
+const { width } = Dimensions.get('window');
+
+const chunkArray = (arr: SongItem[], size: number): SongItem[][] => {
+  const result: SongItem[][] = [];
+  for (let i = 0; i < arr.length; i += size) {
+    result.push(arr.slice(i, i + size));
+  }
+  return result;
+};
+
+type SongItem = {
+  id: string;
+  title: string;
+  artist: string;
+  image: any;
+  duration?: string;
+};
+
+type SectionTitleProps = {
+  title: string;
+};
+
+const SectionTitle = ({ title }: SectionTitleProps) => (
+  <Text style={styles.sectionTitle}>{title}</Text>
+);
+
+
+type PlaylistItem = {
+  id: string;
+  title: string;
+  image: any;
+};
+
+type PlaylistCardProps = {
+  item: PlaylistItem;
+};
+
+const PlaylistCard = ({ item }: PlaylistCardProps) => (
+  <TouchableOpacity style={styles.playlistCard}>
+    <Image source={item.image} style={styles.playlistImage} />
+    <Text style={styles.playlistTitle}>{item.title}</Text>
+  </TouchableOpacity>
+);
+
+type SongCardProps = {
+  item: SongItem;
+};
+
+const SongCard = ({ item }: SongCardProps) => (
+  <TouchableOpacity style={styles.songCard}>
+    <Image source={item.image} style={styles.songCardImage} />
+    <Text style={styles.songCardTitle} numberOfLines={1}>{item.title}</Text>
+    <Text style={styles.songCardArtist} numberOfLines={1}>{item.artist}</Text>
+  </TouchableOpacity>
+);
+
+
+type SongRowProps = {
+  song: SongItem;
+  isLast?: boolean;
+};
+
+const SongRow = ({ song, isLast }: SongRowProps) => (
+  <View style={[styles.songRow, isLast && { paddingRight: 16 }]}>
+    <Image source={song.image} style={styles.songRowImage} />
+    <View style={{ flex: 1 }}>
+      <Text style={styles.songRowTitle}>{song.title}</Text>
+      <Text style={styles.songRowArtist}>{song.artist}</Text>
+    </View>
+    <Icon name="play-circle-outline" size={28} color="#1DB954" />
+  </View>
+);
 
 const playlists = [
   { id: '1', title: 'Top Hits', image: require('@/assets/images/partial-react-logo.png') },
@@ -15,8 +97,11 @@ const recommendedSongs = [
   { id: '1', title: 'Blinding Lights', artist: 'The Weeknd', image: require('@/assets/images/partial-react-logo.png'), duration: '3:20' },
   { id: '2', title: 'Dance Monkey', artist: 'Tones and I', image: require('@/assets/images/partial-react-logo.png'), duration: '3:30' },
   { id: '3', title: 'Levitating', artist: 'Dua Lipa', image: require('@/assets/images/partial-react-logo.png'), duration: '3:45' },
-  { id: '4', title: 'Peaches', artist: 'Justin Bieber', image: require('@/assets/images/partial-react-logo.png'), duration: '3:18' },
-  { id: '5', title: 'Bad Guy', artist: 'Billie Eilish', image: require('@/assets/images/partial-react-logo.png'), duration: '3:14' },
+  { id: '4', title: 'Blinding Lights', artist: 'The Weeknd', image: require('@/assets/images/partial-react-logo.png'), duration: '3:20' },
+  { id: '5', title: 'Dance Monkey', artist: 'Tones and I', image: require('@/assets/images/partial-react-logo.png'), duration: '3:30' },
+  { id: '6', title: 'Levitating', artist: 'Dua Lipa', image: require('@/assets/images/partial-react-logo.png'), duration: '3:45' },
+  { id: '7', title: 'Dance Monkey', artist: 'Tones and I', image: require('@/assets/images/partial-react-logo.png'), duration: '3:30' },
+  { id: '8', title: 'Levitating', artist: 'Dua Lipa', image: require('@/assets/images/partial-react-logo.png'), duration: '3:45' },
 ];
 
 const popularSongs = [
@@ -26,249 +111,221 @@ const popularSongs = [
   { id: '4', title: 'Peaches', artist: 'Justin Bieber', image: require('@/assets/images/partial-react-logo.png') },
   { id: '5', title: 'Bad Guy', artist: 'Billie Eilish', image: require('@/assets/images/partial-react-logo.png') },
   { id: '6', title: 'Stay', artist: 'The Kid LAROI, Justin Bieber', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '7', title: 'Good 4 U', artist: 'Olivia Rodrigo', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '8', title: 'Montero', artist: 'Lil Nas X', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '9', title: 'Blinding Lights', artist: 'The Weeknd', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '10', title: 'Dance Monkey', artist: 'Tones and I', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '11', title: 'Levitating', artist: 'Dua Lipa', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '12', title: 'Peaches', artist: 'Justin Bieber', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '13', title: 'Bad Guy', artist: 'Billie Eilish', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '14', title: 'Stay', artist: 'The Kid LAROI, Justin Bieber', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '15', title: 'Good 4 U', artist: 'Olivia Rodrigo', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '16', title: 'Montero', artist: 'Lil Nas X', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '7', title: 'Bad Guy', artist: 'Billie Eilish', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '8', title: 'Stay', artist: 'The Kid LAROI, Justin Bieber', image: require('@/assets/images/partial-react-logo.png') },
 ];
 
 const newReleases = [
-  { id: '6', title: 'Paint The Town Red', artist: 'Doja Cat', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '7', title: 'Vampire', artist: 'Olivia Rodrigo', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '8', title: 'Single Soon', artist: 'Selena Gomez', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '1', title: 'Paint The Town Red', artist: 'Doja Cat', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '2', title: 'Vampire', artist: 'Olivia Rodrigo', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '3', title: 'Paint The Town Red', artist: 'Doja Cat', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '4', title: 'Vampire', artist: 'Olivia Rodrigo', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '5', title: 'Paint The Town Red', artist: 'Doja Cat', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '6', title: 'Vampire', artist: 'Olivia Rodrigo', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '7', title: 'Paint The Town Red', artist: 'Doja Cat', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '8', title: 'Vampire', artist: 'Olivia Rodrigo', image: require('@/assets/images/partial-react-logo.png') },
 ];
 
 const trendingNow = [
-  { id: '9', title: 'Flowers', artist: 'Miley Cyrus', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '10', title: 'Calm Down', artist: 'Rema & Selena Gomez', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '11', title: 'Unholy', artist: 'Sam Smith & Kim Petras', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '1', title: 'Flowers', artist: 'Miley Cyrus', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '2', title: 'Calm Down', artist: 'Rema & Selena Gomez', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '3', title: 'Flowers', artist: 'Miley Cyrus', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '4', title: 'Calm Down', artist: 'Rema & Selena Gomez', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '5', title: 'Flowers', artist: 'Miley Cyrus', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '6', title: 'Calm Down', artist: 'Rema & Selena Gomez', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '7', title: 'Flowers', artist: 'Miley Cyrus', image: require('@/assets/images/partial-react-logo.png') },
+  { id: '8', title: 'Calm Down', artist: 'Rema & Selena Gomez', image: require('@/assets/images/partial-react-logo.png') },
 ];
 
-const SongList = ({ title, songs }) => (
-  <>
-    <Text style={styles.sectionTitle}>{title}</Text>
-    {songs.map((song) => (
-      <View key={song.id} style={styles.songItem}>
-        <Image source={song.image} style={styles.songListImg} />
-        <View>
-          <Text style={styles.songTitle}>{song.title}</Text>
-          <Text style={styles.songArtist}>{song.artist}</Text>
-        </View>
-        <Icon name="play-circle-outline" size={28} color="#1DB954" />
-      </View>
-    ))}
-  </>
-);
+const recommendedChunks = chunkArray(recommendedSongs, 4);
+const newReleaseChunks = chunkArray(newReleases, 4);
+const trendingChunks = chunkArray(trendingNow, 4);
 
-const PopularSongRow = ({ songs }) => (
-  <FlatList
-    horizontal
-    showsHorizontalScrollIndicator={false}
-    data={songs}
-    keyExtractor={(item) => item.id}
-    renderItem={({ item }) => (
-      <TouchableOpacity style={styles.popularSongItem}>
-        <Image source={item.image} style={styles.popularSongImage} />
-        <View style={styles.popularSongInfo}>
-          <Text style={styles.popularSongTitle} numberOfLines={1}>{item.title}</Text>
-          <Text style={styles.popularSongArtist} numberOfLines={1}>{item.artist}</Text>
-        </View>
-        <Icon name="play-circle-outline" size={24} color="#1DB954" style={styles.popularSongPlayIcon} />
-      </TouchableOpacity>
-    )}
-    contentContainerStyle={styles.popularSongsContainer}
-  />
-);
 
-const HomeScreen = () => {
-  const popularSongRows = [];
-  for (let i = 0; i < popularSongs.length; i += 4) {
-    popularSongRows.push(popularSongs.slice(i, i + 4));
-  }
-
+export default function HomeScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Header />
       </View>
 
-      <Text style={styles.sectionTitle}>Recommended Playlists</Text>
+      {/* Playlist Carousel */}
+      <SectionTitle title="🔥 Recommended Playlists" />
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
         data={playlists}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.playlistItem}>
-            <Image source={item.image} style={styles.playlistImage} />
-            <Text style={styles.playlistText}>{item.title}</Text>
-          </TouchableOpacity>
-        )}
+        renderItem={({ item }) => <PlaylistCard item={item} />}
+        contentContainerStyle={{ paddingBottom: 12 }}
       />
 
-      <Text style={styles.sectionTitle}>Recommended Songs</Text>
+      {/* Grid song cards */}
+      <SectionTitle title="🎧 Recommended Songs" />
       <FlatList
         horizontal
-        showsHorizontalScrollIndicator={false}
-        data={recommendedSongs}
-        keyExtractor={(item) => item.id}
+        data={recommendedChunks}
+        keyExtractor={(_, index) => 'rec' + index}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.recommendedSongItem}>
-            <Image source={item.image} style={styles.recommendedSongImage} />
-            <View style={styles.recommendedSongInfo}>
-              <Text style={styles.recommendedSongTitle} numberOfLines={1}>{item.title}</Text>
-              <Text style={styles.recommendedSongArtist} numberOfLines={1}>{item.artist}</Text>
-              <View style={styles.recommendedSongDuration}>
-                <Icon name="time-outline" size={14} color="#aaa" />
-                <Text style={styles.recommendedSongDurationText}>{item.duration}</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
+          <View style={styles.gridWrapper}>
+            {item.map((song: SongItem) => (
+              <SongCard key={song.id} item={song} />
+            ))}
+          </View>
         )}
-        contentContainerStyle={styles.recommendedSongsContainer}
+        showsHorizontalScrollIndicator={false}
+        snapToInterval={width}
+        decelerationRate="fast"
       />
 
-      <Text style={styles.sectionTitle}>Popular Songs</Text>
-      {popularSongRows.map((row, index) => (
-        <PopularSongRow key={`row-${index}`} songs={row} />
-      ))}
 
-      <SongList title="New Releases" songs={newReleases} />
-      <SongList title="Trending Now" songs={trendingNow} />
+
+      {/* Song rows */}
+      <SectionTitle title="🆕 New Releases" />
+      <FlatList
+        horizontal
+        data={chunkArray(newReleases, 4)}
+        keyExtractor={(_, index) => 'new-' + index}
+        renderItem={({ item }) => (
+          <View style={styles.songRowChunk}>
+            {item.map((song: SongItem) => (
+              <SongRow key={song.id} song={song} />
+            ))}
+          </View>
+        )}
+        showsHorizontalScrollIndicator={false}
+        snapToInterval={width}
+        decelerationRate="fast"
+      />
+
+
+
+      <SectionTitle title="📈 Trending Now" />
+      <FlatList
+        horizontal
+        data={chunkArray(trendingNow, 4)}
+        keyExtractor={(_, index) => 'trend-' + index}
+        renderItem={({ item }) => (
+          <View style={styles.songRowChunk}>
+            {item.map((song: SongItem) => (
+              <SongRow key={song.id} song={song} />
+            ))}
+          </View>
+        )}
+        showsHorizontalScrollIndicator={false}
+        snapToInterval={width}
+        decelerationRate="fast"
+      />
+
+
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#121212',
     padding: 16,
   },
   header: {
-    width: '100%',
-    flex: 1,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 70,
+    marginBottom: 20,
+  },
+  greeting: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  headerIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   sectionTitle: {
     color: '#fff',
-    fontSize: 18,
-    marginTop: 24,
-    marginBottom: 8,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: '700',
+    marginTop: 28,
+    marginBottom: 12,
   },
-  playlistItem: {
+
+  // Playlist
+  playlistCard: {
+    width: 120,
     marginRight: 16,
+    backgroundColor: '#1e1e1e',
+    borderRadius: 14,
+    padding: 10,
     alignItems: 'center',
   },
   playlistImage: {
     width: 100,
     height: 100,
-    borderRadius: 8,
+    borderRadius: 12,
   },
-  playlistText: {
+  playlistTitle: {
     color: '#fff',
-    marginTop: 6,
-  },
-  recommendedSongsContainer: {
-    paddingRight: 16,
-  },
-  recommendedSongItem: {
-    width: 240,
-    backgroundColor: '#1E1E1E',
-    borderRadius: 10,
-    marginRight: 12,
-    padding: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  recommendedSongImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
-    marginRight: 12,
-  },
-  recommendedSongInfo: {
-    flex: 1,
-  },
-  recommendedSongTitle: {
-    color: '#fff',
+    fontSize: 13,
     fontWeight: '600',
+    marginTop: 6,
+    textAlign: 'center',
   },
-  recommendedSongArtist: {
-    color: '#aaa',
-    fontSize: 12,
-  },
-  recommendedSongDuration: {
+
+  // Grid Songs
+  gridWrapper: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    width: width - 32,
   },
-  recommendedSongDurationText: {
+
+  songCard: {
+    width: (width - 48) / 2,
+    backgroundColor: '#1e1e1e',
+    borderRadius: 14,
+    marginBottom: 16,
+    padding: 10,
+  },
+  songCardImage: {
+    width: '100%',
+    height: 100,
+    borderRadius: 10,
+    marginBottom: 8,
+  },
+  songCardTitle: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  songCardArtist: {
     color: '#aaa',
-    marginLeft: 4,
     fontSize: 12,
   },
-  songItem: {
+
+  // Song Row
+  songRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
   },
-  songListImg: {
+  songRowImage: {
     width: 50,
     height: 50,
-    borderRadius: 6,
+    borderRadius: 8,
     marginRight: 12,
   },
-  songTitle: {
+  songRowTitle: {
     color: '#fff',
+    fontSize: 15,
     fontWeight: '600',
   },
-  songArtist: {
+  songRowArtist: {
     color: '#aaa',
     fontSize: 12,
   },
-  popularSongsContainer: {
-    marginBottom: 16,
-  },
-  popularSongItem: {
-    width: 150,
-    marginRight: 12,
-    backgroundColor: '#1E1E1E',
-    borderRadius: 10,
-    padding: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  popularSongImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 6,
-    marginRight: 10,
-  },
-  popularSongInfo: {
-    flex: 1,
-  },
-  popularSongTitle: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  popularSongArtist: {
-    color: '#aaa',
-    fontSize: 12,
-  },
-  popularSongPlayIcon: {
-    marginLeft: 8,
+  songRowChunk: {
+    width,
+    paddingRight: 40, // tránh bị sát lề phải
   },
 });
-
-export default HomeScreen;

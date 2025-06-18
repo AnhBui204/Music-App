@@ -1,32 +1,31 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet, Modal } from "react-native";
-import { Ionicons, FontAwesome } from '@expo/vector-icons';
-import { StatusBar, Platform } from "react-native";
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import SearchScreen from './SearchScreen'; // hoặc từ 'app/search' nếu bạn dùng expo-router
+import { Image, Modal, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import SearchScreen from './SearchScreen'; // đường dẫn tới màn search
 
 export default function Header() {
     const [searchVisible, setSearchVisible] = useState(false);
 
     return (
         <>
-            <View style={styles.headerContainer}>
-                <View style={styles.leftContainer}>
+            <View style={styles.header}>
+                <View style={styles.left}>
                     <Image
                         source={require('@/assets/images/partial-react-logo.png')}
                         style={styles.logo}
                     />
-                    <Text style={styles.musicText}>Music</Text>
+                    <Text style={styles.title}>Hi, Anh Bùi 👋</Text>
                 </View>
 
-                <View style={styles.rightContainer}>
-                    <TouchableOpacity style={styles.iconButton}>
-                        <Ionicons name="notifications-outline" size={24} color="white" />
+                <View style={styles.right}>
+                    <TouchableOpacity style={styles.icon}>
+                        <Ionicons name="notifications-outline" size={22} color="#fff" />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setSearchVisible(true)}>
-                        <Ionicons name="search-outline" size={24} color="white" />
+                    <TouchableOpacity style={styles.icon} onPress={() => setSearchVisible(true)}>
+                        <Ionicons name="search-outline" size={22} color="#fff" />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.iconButton}>
-                        <FontAwesome name="user-circle-o" size={24} color="white" />
+                    <TouchableOpacity style={styles.avatar}>
+                        <FontAwesome name="user-circle-o" size={24} color="#fff" />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -34,62 +33,54 @@ export default function Header() {
             <Modal visible={searchVisible} animationType="slide">
                 <SearchScreen />
                 <TouchableOpacity onPress={() => setSearchVisible(false)}>
-                    <Text style={{ fontSize: 18, textAlign: 'center', padding: 10 }}>Close</Text>
+                    <Text style={{ fontSize: 18, textAlign: 'center', padding: 12 }}>Close</Text>
                 </TouchableOpacity>
             </Modal>
         </>
     );
 }
 
-
 const styles = StyleSheet.create({
-    headerContainer: {
-        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-        width: '100%',
-        top: 0,
-        position: 'absolute',
+    header: {
+        paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ?? 24) : 50,
+        paddingBottom: 16,
+        paddingHorizontal: 20,
+        backgroundColor: '#1C1C1E',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        backgroundColor: '#1E1E1E',
-        elevation: 4,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
-        borderRadius: 15,
+        borderBottomWidth: 0.5,
+        borderColor: '#333',
         zIndex: 10,
     },
-    leftContainer: {
+    left: {
         flexDirection: 'row',
         alignItems: 'center',
     },
     logo: {
         width: 32,
         height: 32,
-        marginRight: 8,
+        marginRight: 10,
+        borderRadius: 8,
     },
-    musicText: {
+    title: {
         fontSize: 18,
-        fontWeight: 'bold',
-        color: 'white',
+        fontWeight: '600',
+        color: '#fff',
     },
-    rightContainer: {
+    right: {
         flexDirection: 'row',
         alignItems: 'center',
     },
-    iconButton: {
+    icon: {
         marginLeft: 16,
+        padding: 8,
+        backgroundColor: '#2C2C2E',
+        borderRadius: 50,
     },
-    searchInput: {
-        flex: 1,
+    avatar: {
         marginLeft: 16,
-        paddingVertical: 4,
-        paddingHorizontal: 10,
-        borderRadius: 8,
-        backgroundColor: '#333',
-        color: 'white',
-        fontSize: 16,
-    },
+        borderRadius: 50,
+        overflow: 'hidden',
+    }
 });
