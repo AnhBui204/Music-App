@@ -40,6 +40,7 @@ export default function LoginScreen() {
         value={username}
         onChangeText={setUsername}
         autoCapitalize="none"
+        textColor='#fff'
         mode="outlined"
         style={styles.input}
       />
@@ -49,6 +50,7 @@ export default function LoginScreen() {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+         textColor='#fff'
         mode="outlined"
         style={styles.input}
       />

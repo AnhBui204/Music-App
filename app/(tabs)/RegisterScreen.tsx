@@ -38,6 +38,7 @@ export default function RegisterScreen() {
         label="Tên người dùng"
         value={username}
         onChangeText={setUsername}
+          textColor='#fff'
         mode="outlined"
         style={styles.input}
       />
@@ -48,8 +49,10 @@ export default function RegisterScreen() {
         onChangeText={setEmail}
         autoCapitalize="none"
         keyboardType="email-address"
+          textColor='#fff'
         mode="outlined"
         style={styles.input}
+       
       />
 
       <TextInput
@@ -57,6 +60,7 @@ export default function RegisterScreen() {
         value={phone}
         onChangeText={setPhone}
         keyboardType="phone-pad"
+          textColor='#fff'
         mode="outlined"
         style={styles.input}
       />
@@ -68,6 +72,8 @@ export default function RegisterScreen() {
         secureTextEntry
         mode="outlined"
         style={styles.input}
+        textColor='#fff'
+      
       />
 
       <Button
@@ -109,7 +115,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     borderRadius: 8,
     paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
   button: {
     backgroundColor: '#2ecc71',

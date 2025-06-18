@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://192.168.1.7:3000/users';
+const API_URL = 'http://192.168.1.11:4000/users';
 
 
 const login = async (username: string, password: string) => {
@@ -24,10 +24,31 @@ const register = async (user: {
   phone?: string;
 }) => {
   try {
-   
+    if (!user.username || !user.password || !user.email || !user.phone) {
+      return { success: false, error: 'Vui lòng nhập đầy đủ thông tin' };
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(user.email)) {
+      return { success: false, error: 'Email không hợp lệ' };
+    }
+
+    const phoneRegex = /^[0-9]{9,11}$/;
+    if (!phoneRegex.test(user.phone)) {
+      return { success: false, error: 'Số điện thoại không hợp lệ' };
+    }
+
+    if (user.password.length < 6) {
+      return { success: false, error: 'Mật khẩu phải có ít nhất 6 ký tự' };
+    }
+
     const check = await axios.get(`${API_URL}?username=${user.username}`);
     if (check.data.length > 0) {
       return { success: false, error: 'Tên đăng nhập đã được sử dụng' };
+    }
+    const emailCheck = await axios.get(`${API_URL}?email=${user.email}`);
+    if(emailCheck.data.length > 0){
+      return {success:false,error:'Email đã được sử dụng'}
     }
 
     const newUser = {
@@ -42,5 +63,6 @@ const register = async (user: {
     return { success: false, error: 'Lỗi server' };
   }
 };
+
 
 export default { login, register };
