@@ -62,8 +62,9 @@ export default function LoginScreen() {
         Đăng nhập
       </Button>
 
-      <Text style={styles.switchText} onPress={() => router.push('/RegisterScreen')}>
-        Chưa có tài khoản? Đăng ký
+      <Text style={styles.switchText} >
+        Chưa có tài khoản?
+        <Text style={styles.registerLink} onPress={() => router.push('/RegisterScreen')}> Đăng kí</Text>
       </Text>
     </View>
   );
@@ -72,26 +73,34 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#181A20', 
     padding: 20,
     justifyContent: 'center',
-    backgroundColor: '#ffffff',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#2ecc71',
+    color: '#2ecc71', 
     marginBottom: 30,
     textAlign: 'center',
   },
   input: {
     marginBottom: 15,
+    backgroundColor: '#23262F',
+    color: '#fff',
   },
   loginButton: {
-    backgroundColor: '#27ae60',
+    backgroundColor: '#2ecc71', 
     borderRadius: 8,
     width: '40%',
     alignSelf: 'center',
     marginTop: 10,
+  },
+  loginButtonText: {
+    color: '#181A20', 
+    fontWeight: 'bold',
+    textAlign: 'center',
+    padding: 10,
   },
   switchText: {
     marginTop: 25,
@@ -99,4 +108,8 @@ const styles = StyleSheet.create({
     color: '#2ecc71',
     fontWeight: '600',
   },
+  registerLink:{
+    color:'#2ecc71',
+    fontWeight:'bold'
+  }
 });

@@ -4,8 +4,7 @@ import { Alert, StyleSheet, View } from 'react-native';
 import {
   Button,
   Text,
-  TextInput,
-  useTheme,
+  TextInput
 } from 'react-native-paper';
 import AuthService from '../../services/AuthService';
 
@@ -14,7 +13,6 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const theme = useTheme();
 
   const handleRegister = async () => {
     if (!username || !email || !password || !phone) {
@@ -83,9 +81,9 @@ export default function RegisterScreen() {
 
       <Text
         style={styles.switchText}
-        onPress={() => router.push('/LoginScreen')}
+       
       >
-        Đã có tài khoản? <Text style={styles.loginLink}>Đăng nhập</Text>
+        Đã có tài khoản? <Text style={styles.loginLink} onPress={() => router.push('/LoginScreen')}>Đăng nhập</Text>
       </Text>
     </View>
   );
@@ -94,33 +92,46 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
+    backgroundColor: '#181A20',
+    padding: 20,
     justifyContent: 'center',
-    backgroundColor: '#F0FFF0', 
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
+    color: '#2ecc71',
     marginBottom: 30,
     textAlign: 'center',
-    color: '#388E3C',
   },
   input: {
-    marginBottom: 16,
+    marginBottom: 15,
+    backgroundColor: '#23262F',
+    color: '#fff',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
   },
   button: {
-    marginTop: 10,
+    backgroundColor: '#2ecc71',
     borderRadius: 8,
-    backgroundColor: '#4CAF50',
+    width: '40%',
+    alignSelf: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#181A20',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    padding: 10,
   },
   switchText: {
-    marginTop: 24,
+    marginTop: 25,
     textAlign: 'center',
-    fontSize: 14,
-    color: '#333',
+    color: '#2ecc71',
+    fontWeight: '600',
   },
   loginLink: {
-    color: '#2E7D32',
+    color: '#2ecc71',
     fontWeight: 'bold',
-  },
+  }
 });
