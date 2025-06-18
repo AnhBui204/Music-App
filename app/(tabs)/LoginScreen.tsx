@@ -36,7 +36,7 @@ export default function LoginScreen() {
       <Text style={styles.title}>Đăng Nhập</Text>
 
       <TextInput
-        label="Tên người dùng"
+        label={<Text style={{ color: '#fff' }}>Tên người dùng</Text>}
         value={username}
         onChangeText={setUsername}
         autoCapitalize="none"
@@ -46,7 +46,7 @@ export default function LoginScreen() {
       />
 
       <TextInput
-        label="Mật khẩu"
+       label={<Text style={{ color: '#fff' }}>Mật khẩu</Text>}
         value={password}
         onChangeText={setPassword}
         secureTextEntry

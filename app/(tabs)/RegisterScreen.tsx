@@ -29,22 +29,32 @@ export default function RegisterScreen() {
       Alert.alert('Thất bại', result.error || 'Đăng ký thất bại');
     }
   };
+const inputTheme = {
+  colors: {
+    text: '#fff',        
+    placeholder: '#2ecc71', 
+    background: '#23262F' 
+  }
+};
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Đăng Ký</Text>
 
-      <TextInput
-        label="Tên người dùng"
-        value={username}
-        onChangeText={setUsername}
-          textColor='#fff'
-        mode="outlined"
-        style={styles.input}
-      />
+<TextInput
+ label={<Text style={{ color: '#fff' }}>Tên người dùng</Text>}
+  value={username}
+  onChangeText={setUsername}
+  textColor="#fff"
+  mode="outlined"
+  style={styles.input}
+  theme={inputTheme}
+   
+/>
+
 
       <TextInput
-        label="Email"
+    label={<Text style={{ color: '#fff' }}>Email</Text>}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -56,7 +66,7 @@ export default function RegisterScreen() {
       />
 
       <TextInput
-        label="Số điện thoại"
+        label={<Text style={{ color: '#fff' }}>Số điện thoại</Text>}
         value={phone}
         onChangeText={setPhone}
         keyboardType="phone-pad"
@@ -66,7 +76,7 @@ export default function RegisterScreen() {
       />
 
       <TextInput
-        label="Mật khẩu"
+        label={<Text style={{ color: '#fff' }}>Mật khẩu</Text>}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
