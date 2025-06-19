@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = 'http://26.250.244.231:4000'; 
+const API = 'http://118.69.34.209:4000'; 
 
 const MusicService = {
   getPlaylists: () => axios.get(`${API}/playlists`),

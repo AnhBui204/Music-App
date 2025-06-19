@@ -28,7 +28,7 @@ export default function LoginScreen() {
       await AsyncStorage.setItem('user', JSON.stringify(result.user));
 
       Alert.alert('Thành công', 'Đăng nhập thành công!');
-      router.replace('../HomePage/HomePage');
+      router.replace('../../components/HomePage/HomePage');
     } else {
       Alert.alert('Thất bại', result.error);
     }

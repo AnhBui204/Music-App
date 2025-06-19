@@ -1,11 +1,12 @@
 import axios from 'axios';
 
-const API_URL = 'http://26.250.244.231:4000/users';
+const API_URL = 'http://118.69.34.209:4000/users';
 
 
 const login = async (username: string, password: string) => {
   try {
     const res = await axios.get(`${API_URL}?username=${username}&password=${password}`);
+    console.log('Username: ' +username + 'Password: ' + password);
     const user = res.data[0];
     if (user) {
       return { success: true, user };
