@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://192.168.1.11:4000/users';
+const API_URL = 'http://10.12.49.246:4000/users';
 
 
 const login = async (username: string, password: string) => {
@@ -13,6 +13,7 @@ const login = async (username: string, password: string) => {
       return { success: false, error: 'Tên đăng nhập hoặc mật khẩu không đúng' };
     }
   } catch (error: any) {
+    console.log('Login error:', error);
     console.log('Login error:', error?.response?.data || error.message || error);
     return { success: false, error: 'Lỗi server' };
   }
@@ -59,6 +60,7 @@ const register = async (user: {
     const res = await axios.post(API_URL, newUser);
     return { success: true, user: res.data };
   } catch (error: any) {
+    console.log('Register error:', error);
     console.log('Register error:', error?.response?.data || error.message || error);
     return { success: false, error: 'Lỗi server' };
   }
