@@ -1,5 +1,7 @@
 import Header from '@/components/Header/Header';
-import React from 'react';
+import MusicService from '@/services/MusicService'; // File API call
+import { useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -12,7 +14,26 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+const images: Record<string, any> = {
+  cover: require("../../assets/images/cover.png"),
+};
+
+
 const { width } = Dimensions.get('window');
+
+type SongItem = {
+  id: string;
+  title: string;
+  artist: string;
+  image: string; // URI string từ db
+  duration?: string;
+};
+
+type PlaylistItem = {
+  id: string;
+  title: string;
+  image: string;
+};
 
 const chunkArray = (arr: SongItem[], size: number): SongItem[][] => {
   const result: SongItem[][] = [];
@@ -22,61 +43,28 @@ const chunkArray = (arr: SongItem[], size: number): SongItem[][] => {
   return result;
 };
 
-type SongItem = {
-  id: string;
-  title: string;
-  artist: string;
-  image: any;
-  duration?: string;
-};
-
-type SectionTitleProps = {
-  title: string;
-};
-
-const SectionTitle = ({ title }: SectionTitleProps) => (
+const SectionTitle = ({ title }: { title: string }) => (
   <Text style={styles.sectionTitle}>{title}</Text>
 );
 
-
-type PlaylistItem = {
-  id: string;
-  title: string;
-  image: any;
-};
-
-type PlaylistCardProps = {
-  item: PlaylistItem;
-};
-
-const PlaylistCard = ({ item }: PlaylistCardProps) => (
+const PlaylistCard = ({ item }: { item: PlaylistItem }) => (
   <TouchableOpacity style={styles.playlistCard}>
-    <Image source={item.image} style={styles.playlistImage} />
+    <Image source={images[item.image]} style={styles.playlistImage} />
     <Text style={styles.playlistTitle}>{item.title}</Text>
   </TouchableOpacity>
 );
 
-type SongCardProps = {
-  item: SongItem;
-};
-
-const SongCard = ({ item }: SongCardProps) => (
+const SongCard = ({ item }: { item: SongItem }) => (
   <TouchableOpacity style={styles.songCard}>
-    <Image source={item.image} style={styles.songCardImage} />
+    <Image source={images[item.image]} style={styles.songCardImage} />
     <Text style={styles.songCardTitle} numberOfLines={1}>{item.title}</Text>
     <Text style={styles.songCardArtist} numberOfLines={1}>{item.artist}</Text>
   </TouchableOpacity>
 );
 
-
-type SongRowProps = {
-  song: SongItem;
-  isLast?: boolean;
-};
-
-const SongRow = ({ song, isLast }: SongRowProps) => (
-  <View style={[styles.songRow, isLast && { paddingRight: 16 }]}>
-    <Image source={song.image} style={styles.songRowImage} />
+const SongRow = ({ song }: { song: SongItem }) => (
+  <View style={styles.songRow}>
+    <Image source={images[song.image]} style={styles.songRowImage} />
     <View style={{ flex: 1 }}>
       <Text style={styles.songRowTitle}>{song.title}</Text>
       <Text style={styles.songRowArtist}>{song.artist}</Text>
@@ -85,90 +73,59 @@ const SongRow = ({ song, isLast }: SongRowProps) => (
   </View>
 );
 
-const playlists = [
-  { id: '1', title: 'Top Hits', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '2', title: 'Workout', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '3', title: 'Chill Vibes', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '4', title: 'Focus', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '5', title: 'Party', image: require('@/assets/images/partial-react-logo.png') },
-];
-
-const recommendedSongs = [
-  { id: '1', title: 'Blinding Lights', artist: 'The Weeknd', image: require('@/assets/images/partial-react-logo.png'), duration: '3:20' },
-  { id: '2', title: 'Dance Monkey', artist: 'Tones and I', image: require('@/assets/images/partial-react-logo.png'), duration: '3:30' },
-  { id: '3', title: 'Levitating', artist: 'Dua Lipa', image: require('@/assets/images/partial-react-logo.png'), duration: '3:45' },
-  { id: '4', title: 'Blinding Lights', artist: 'The Weeknd', image: require('@/assets/images/partial-react-logo.png'), duration: '3:20' },
-  { id: '5', title: 'Dance Monkey', artist: 'Tones and I', image: require('@/assets/images/partial-react-logo.png'), duration: '3:30' },
-  { id: '6', title: 'Levitating', artist: 'Dua Lipa', image: require('@/assets/images/partial-react-logo.png'), duration: '3:45' },
-  { id: '7', title: 'Dance Monkey', artist: 'Tones and I', image: require('@/assets/images/partial-react-logo.png'), duration: '3:30' },
-  { id: '8', title: 'Levitating', artist: 'Dua Lipa', image: require('@/assets/images/partial-react-logo.png'), duration: '3:45' },
-];
-
-const popularSongs = [
-  { id: '1', title: 'Blinding Lights', artist: 'The Weeknd', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '2', title: 'Dance Monkey', artist: 'Tones and I', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '3', title: 'Levitating', artist: 'Dua Lipa', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '4', title: 'Peaches', artist: 'Justin Bieber', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '5', title: 'Bad Guy', artist: 'Billie Eilish', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '6', title: 'Stay', artist: 'The Kid LAROI, Justin Bieber', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '7', title: 'Bad Guy', artist: 'Billie Eilish', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '8', title: 'Stay', artist: 'The Kid LAROI, Justin Bieber', image: require('@/assets/images/partial-react-logo.png') },
-];
-
-const newReleases = [
-  { id: '1', title: 'Paint The Town Red', artist: 'Doja Cat', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '2', title: 'Vampire', artist: 'Olivia Rodrigo', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '3', title: 'Paint The Town Red', artist: 'Doja Cat', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '4', title: 'Vampire', artist: 'Olivia Rodrigo', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '5', title: 'Paint The Town Red', artist: 'Doja Cat', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '6', title: 'Vampire', artist: 'Olivia Rodrigo', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '7', title: 'Paint The Town Red', artist: 'Doja Cat', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '8', title: 'Vampire', artist: 'Olivia Rodrigo', image: require('@/assets/images/partial-react-logo.png') },
-];
-
-const trendingNow = [
-  { id: '1', title: 'Flowers', artist: 'Miley Cyrus', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '2', title: 'Calm Down', artist: 'Rema & Selena Gomez', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '3', title: 'Flowers', artist: 'Miley Cyrus', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '4', title: 'Calm Down', artist: 'Rema & Selena Gomez', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '5', title: 'Flowers', artist: 'Miley Cyrus', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '6', title: 'Calm Down', artist: 'Rema & Selena Gomez', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '7', title: 'Flowers', artist: 'Miley Cyrus', image: require('@/assets/images/partial-react-logo.png') },
-  { id: '8', title: 'Calm Down', artist: 'Rema & Selena Gomez', image: require('@/assets/images/partial-react-logo.png') },
-];
-
-const recommendedChunks = chunkArray(recommendedSongs, 4);
-const newReleaseChunks = chunkArray(newReleases, 4);
-const trendingChunks = chunkArray(trendingNow, 4);
-
-
 export default function HomeScreen() {
+  const params = useLocalSearchParams();
+  const user = typeof params.user === 'string' ? JSON.parse(params.user) : params.user;
+
+  const [playlists, setPlaylists] = useState<PlaylistItem[]>([]);
+  const [recommendedSongs, setRecommendedSongs] = useState<SongItem[]>([]);
+  const [newReleases, setNewReleases] = useState<SongItem[]>([]);
+  const [trendingNow, setTrendingNow] = useState<SongItem[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [pl, rec, news, trend] = await Promise.all([
+          MusicService.getPlaylists(),
+          MusicService.getRecommended(),
+          MusicService.getNewReleases(),
+          MusicService.getTrending(),
+        ]);
+        setPlaylists(pl.data);
+        setRecommendedSongs(rec.data);
+        setNewReleases(news.data);
+        setTrendingNow(trend.data);
+      } catch (err) {
+        console.error("Lỗi tải dữ liệu:", err);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Header />
+        <Header username={user?.username} />
       </View>
 
-      {/* Playlist Carousel */}
-      <SectionTitle title="🔥 Recommended Playlists" />
+      <SectionTitle title="🔥 Playlist Gợi Ý" />
       <FlatList
         horizontal
-        showsHorizontalScrollIndicator={false}
         data={playlists}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <PlaylistCard item={item} />}
-        contentContainerStyle={{ paddingBottom: 12 }}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingLeft: 16, paddingBottom: 12 }}
       />
 
-      {/* Grid song cards */}
-      <SectionTitle title="🎧 Recommended Songs" />
+      <SectionTitle title="🎧 Nhạc Đề Xuất" />
       <FlatList
         horizontal
-        data={recommendedChunks}
+        data={chunkArray(recommendedSongs, 4)}
         keyExtractor={(_, index) => 'rec' + index}
         renderItem={({ item }) => (
           <View style={styles.gridWrapper}>
-            {item.map((song: SongItem) => (
+            {item.map((song) => (
               <SongCard key={song.id} item={song} />
             ))}
           </View>
@@ -178,17 +135,14 @@ export default function HomeScreen() {
         decelerationRate="fast"
       />
 
-
-
-      {/* Song rows */}
-      <SectionTitle title="🆕 New Releases" />
+      <SectionTitle title="🆕 Nhạc Mới Phát Hành" />
       <FlatList
         horizontal
         data={chunkArray(newReleases, 4)}
-        keyExtractor={(_, index) => 'new-' + index}
+        keyExtractor={(_, index) => 'new' + index}
         renderItem={({ item }) => (
           <View style={styles.songRowChunk}>
-            {item.map((song: SongItem) => (
+            {item.map((song) => (
               <SongRow key={song.id} song={song} />
             ))}
           </View>
@@ -198,16 +152,14 @@ export default function HomeScreen() {
         decelerationRate="fast"
       />
 
-
-
-      <SectionTitle title="📈 Trending Now" />
+      <SectionTitle title="📈 Thịnh Hành" />
       <FlatList
         horizontal
         data={chunkArray(trendingNow, 4)}
-        keyExtractor={(_, index) => 'trend-' + index}
+        keyExtractor={(_, index) => 'trend' + index}
         renderItem={({ item }) => (
           <View style={styles.songRowChunk}>
-            {item.map((song: SongItem) => (
+            {item.map((song) => (
               <SongRow key={song.id} song={song} />
             ))}
           </View>
@@ -216,11 +168,10 @@ export default function HomeScreen() {
         snapToInterval={width}
         decelerationRate="fast"
       />
-
-
     </ScrollView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

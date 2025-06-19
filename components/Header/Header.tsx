@@ -3,7 +3,11 @@ import React, { useState } from 'react';
 import { Image, Modal, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import SearchScreen from './SearchScreen'; // đường dẫn tới màn search
 
-export default function Header() {
+type HeaderProps = {
+    username?: string;
+};
+
+export default function Header({ username = 'Người dùng' }: HeaderProps) {
     const [searchVisible, setSearchVisible] = useState(false);
 
     return (
@@ -14,7 +18,7 @@ export default function Header() {
                         source={require('@/assets/images/partial-react-logo.png')}
                         style={styles.logo}
                     />
-                    <Text style={styles.title}>Hi, Anh Bùi 👋</Text>
+                    <Text style={styles.title}>Hi, {username} 👋</Text>
                 </View>
 
                 <View style={styles.right}>

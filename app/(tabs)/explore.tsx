@@ -5,6 +5,7 @@ import React from 'react';
 
 import MusicDrawer from '../../components/Favorite/MusicDrawer';
 import HomeScreen from '../../components/HomePage/HomePage';
+import LoginScreen from '../auth/LoginScreen';
 // import ProfileScreen from '../../components/Profile/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
@@ -34,6 +35,8 @@ export default function App() {
       >
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Music" component={MusicDrawer} />
+        <Tab.Screen name="Login" component={LoginScreen} />
+
         {/* <Tab.Screen name="Profile" component={ProfileScreen} /> */}
       </Tab.Navigator>
     </NavigationContainer>

@@ -1,24 +1,28 @@
+// app/index.tsx
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
+import { useEffect } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 
-import { StyleSheet, Text, View } from "react-native";
-import HomeScreen from "@/components/HomePage/HomePage";
+export default function Index() {
+  useEffect(() => {
+    const checkLogin = async () => {
+      await AsyncStorage.removeItem('user');
 
-export default function App() {
+      const user = await AsyncStorage.getItem('user');
+      if (user) {
+        // router.replace('../../HomePage/HomePage');
+        router.replace('/auth/LoginScreen');
+      } else {
+        router.replace('/auth/LoginScreen');
+      }
+    };
+    checkLogin();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <HomeScreen />
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <ActivityIndicator size="large" color="#2ecc71" />
     </View>
-  )
+  );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',  
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 20,
-    color: 'black',
-  }
-})
