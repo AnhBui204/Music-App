@@ -21,6 +21,14 @@
       "phone": "0858748552",
       "password": "23456",
       "createdAt": "2025-06-11T14:44:39.261Z"
+    },
+    {
+      "id": "4929",
+      "username": "anhbui204",
+      "email": "anhbui2k412@gmail.com",
+      "phone": "0123456789",
+      "password": "123456",
+      "createdAt": "2025-06-23T03:18:31.902Z"
     }
   ],
   "favorites": [

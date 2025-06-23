@@ -1,6 +1,5 @@
-// MusicDrawer.tsx
 import { Ionicons } from '@expo/vector-icons';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   DrawerLayoutAndroid,
   StyleSheet,
@@ -14,12 +13,10 @@ import FavoriteMusic from '../Favorite/FavoriteMusic';
 import PlayScreen from '../Favorite/PlayScreen';
 import SavedAlbums from '../Favorite/SavedAlbums';
 
-export default function MusicDrawer() {
+const MusicDrawer = () => {
   const drawer = useRef<DrawerLayoutAndroid>(null);
   const [screen, setScreen] = useState<'Favorite' | 'SavedAlbums' | 'PlayScreen'>('Favorite');
-
   const [currentSong, setCurrentSong] = useState(null);
-
 
   const navigationView = () => (
     <DrawerContent
@@ -66,18 +63,19 @@ export default function MusicDrawer() {
             />
           )}
           {screen === 'SavedAlbums' && <SavedAlbums />}
-          {screen === 'PlayScreen' && (
-  <PlayScreen
-    song={currentSong}
-    goBack={() => setScreen("Favorite")}
-  />
-)}
-
+          {screen === 'PlayScreen' && currentSong && (
+            <PlayScreen
+              song={currentSong}
+              goBack={() => setScreen("Favorite")}
+            />
+          )}
         </View>
       </View>
     </DrawerLayoutAndroid>
   );
-}
+};
+
+export default MusicDrawer;
 
 const styles = StyleSheet.create({
   header: {

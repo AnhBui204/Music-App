@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import {
   Button,
@@ -28,7 +28,7 @@ export default function LoginScreen() {
       await AsyncStorage.setItem('user', JSON.stringify(result.user));
 
       Alert.alert('Thành công', 'Đăng nhập thành công!');
-      router.replace('../../components/HomePage/HomePage');
+      router.replace('../(tabs)/home');
     } else {
       Alert.alert('Thất bại', result.error);
     }

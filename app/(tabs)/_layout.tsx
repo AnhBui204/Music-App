@@ -9,7 +9,8 @@ export default function TabLayout() {
           let iconName: keyof typeof Ionicons.glyphMap = 'home';
           if (route.name === 'home') iconName = 'home';
           else if (route.name === 'music') iconName = 'musical-notes';
-          else if (route.name === 'login') iconName = 'person';
+          else if (route.name === 'profile') iconName = 'person';
+          else if (route.name === 'settings') iconName = 'settings';
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
