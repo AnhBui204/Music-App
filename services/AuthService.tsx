@@ -1,7 +1,13 @@
 import axios from 'axios';
 
+<<<<<<< Updated upstream
 const API_URL = 'http://192.168.106.210:4000/users';
 
+=======
+const API_URL = 'http://192.168.106.210:4000/users'; //đây là địa chỉ IP của Anh Bùi  
+
+// const API_URL = 'http://192.168.56.1:4000/users'; // đây là địa chỉ IP của Phương Anh 
+>>>>>>> Stashed changes
 
 const login = async (username: string, password: string) => {
   try {

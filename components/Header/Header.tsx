@@ -1,5 +1,5 @@
-// components/Header.tsx
 import { user } from "@/data/mock";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import {
     Image,
@@ -11,20 +11,28 @@ import {
 import GenreButton from "./GenreButton";
 
 export default function Header() {
-    const route = useRouter()
+    const router = useRouter();
+
     return (
         <View style={styles.container}>
             <View style={styles.topRow}>
-                <TouchableOpacity
-                    onPress={() => route.push('/profile')}
-                >
+                <TouchableOpacity onPress={() => router.push('/profile')}>
                     <Image source={user.pfp} style={styles.avatar} />
                 </TouchableOpacity>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={styles.genreScroll}
+                >
                     <GenreButton label="All" active />
                     <GenreButton label="Music" />
                     <GenreButton label="Podcasts" />
                 </ScrollView>
+
+                <TouchableOpacity onPress={() => router.push('/search')}>
+                    <Ionicons name="search" size={24} color="white" />
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -33,6 +41,7 @@ export default function Header() {
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 16,
+        paddingTop: 48,
     },
     topRow: {
         flexDirection: "row",
@@ -43,5 +52,8 @@ const styles = StyleSheet.create({
         width: 36,
         height: 36,
         borderRadius: 18,
+    },
+    genreScroll: {
+        flex: 1,
     },
 });

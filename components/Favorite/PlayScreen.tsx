@@ -1,5 +1,5 @@
 // file: components/PlayScreen.tsx
-import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { Audio } from "expo-av";
 import { useEffect, useRef, useState } from "react";
@@ -16,20 +16,18 @@ import {
 // đưa ảnh cover1.png vào
 const images = {
     cover: require("../../assets/images/cover1.png"),
+    cdDisk: require("../../assets/images/cd_disk.png"),
 };
 
+const PLAY_MODES = {
+    REPEAT_ONE: "repeatOne",
+    REPEAT_ALL: "repeatAll",
+    SHUFFLE: "shuffle",
+};
 
-const PlayScreen = ({ song, goBack }) => {
-    if (!song) return null;
-
-
-    // const PlayScreen = () => {
-    //     const song = {
-    //         title: "Music Name",
-    //         artist: "Music Artist",
-    //         imageKey: "cover",
-    //         audioUrl: "music.mp3",
-    //     };
+const PlayScreen = ({ route, navigation }) => {
+    const { song: initialSong } = route.params;
+    const { incrementPlayCount } = useStats();
 
 
 
@@ -37,12 +35,18 @@ const PlayScreen = ({ song, goBack }) => {
     const [playbackInstance, setPlaybackInstance] = useState(null);
     const [position, setPosition] = useState(0);
     const [duration, setDuration] = useState(0);
-    const [modeVisible, setModeVisible] = useState(false);
-    const [mode, setMode] = useState("repeatOne");
+    const [mode, setMode] = useState(PLAY_MODES.REPEAT_ONE);
+    const [isLiked, setIsLiked] = useState(false);
+    const [currentSong, setCurrentSong] = useState(initialSong);
+    const [songs, setSongs] = useState([]);
+
     const soundRef = useRef(null);
 
     useEffect(() => {
-        loadAudio();
+        if (initialSong) {
+            handleSongSelect(initialSong);
+        }
+    
         return () => {
             if (soundRef.current) {
                 soundRef.current.unloadAsync();
@@ -50,7 +54,19 @@ const PlayScreen = ({ song, goBack }) => {
         };
     }, []);
 
+    useEffect(() => {
+        if (isPlaying) {
+            rotateDisc();
+        } else if (rotationRef.current) {
+            rotationRef.current.stop();
+        }
+    }, [isPlaying]);
 
+    useEffect(() => {
+        setSongs(db.favorites);
+    }, []);
+
+    
 
     const loadAudio = async () => {
         const { sound, status } = await Audio.Sound.createAsync(
@@ -64,7 +80,17 @@ const PlayScreen = ({ song, goBack }) => {
     };
 
 
-
+    const handleSongSelect = async (newSong) => {
+        if (soundRef.current) {
+            await soundRef.current.unloadAsync();
+            soundRef.current = null;
+        }
+    
+        setCurrentSong(newSong);
+        setPosition(0);
+        incrementPlayCount(newSong.title);
+        await loadAudio();
+    };
 
     const onPlaybackStatusUpdate = status => {
         if (status.isLoaded) {
@@ -156,6 +182,18 @@ const PlayScreen = ({ song, goBack }) => {
         return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
     };
 
+    const skipToPreviousSong = () => {
+        const currentIndex = songs.findIndex(song => song.id === currentSong.id);
+        let newIndex = currentIndex <= 0 ? songs.length - 1 : currentIndex - 1;
+        handleSongSelect(songs[newIndex]);
+    };
+
+    const skipToNextSong = () => {
+        const currentIndex = songs.findIndex(song => song.id === currentSong.id);
+        let newIndex = currentIndex >= songs.length - 1 ? 0 : currentIndex + 1;
+        handleSongSelect(songs[newIndex]);
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -169,19 +207,15 @@ const PlayScreen = ({ song, goBack }) => {
 
             <View style={styles.coverWrapper}>
                 <Animated.Image
-                    source={require("../../assets/images/cd_disk.png")}
+                    source={IMAGES.cdDisk}
                     style={[styles.cdDisk, { transform: [{ rotate: spin }] }]}
                 />
-                <Image
-                    source={images[song.imageKey]}
-                    style={styles.coverOnDisk}
-                />
+                <Image source={IMAGES[currentSong.imageKey]} style={styles.coverOnDisk} />
             </View>
 
-
             <View style={styles.infoBox}>
-                <Text style={styles.songTitle}>{song.title}</Text>
-                <Text style={styles.artist}>{song.artist}</Text>
+                <Text style={styles.songTitle}>{currentSong.title}</Text>
+                <Text style={styles.artist}>{currentSong.artist}</Text>
             </View>
 
             <View style={styles.progressBarWrapper}>
@@ -202,15 +236,14 @@ const PlayScreen = ({ song, goBack }) => {
 
             <View style={styles.controls}>
                 <TouchableOpacity onPress={toggleMode}>
-                    {mode === "repeatAll" && (
-                        <Feather name="repeat" size={28} color="#1DB954" />
-                    )}
-                    {mode === "repeatOne" && (
-                        <MaterialIcons name="repeat-one" size={28} color="#1DB954" />
-                    )}
-                    {mode === "shuffle" && (
-                        <MaterialIcons name="shuffle" size={28} color="#1DB954" />
-                    )}
+                    <MaterialIcons
+                        name={
+                            mode === PLAY_MODES.REPEAT_ONE ? "repeat-one" :
+                            mode === PLAY_MODES.REPEAT_ALL ? "repeat" : "shuffle"
+                        }
+                        size={28}
+                        color="#1DB954"
+                    />
                 </TouchableOpacity>
 
                 <TouchableOpacity>
