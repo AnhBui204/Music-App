@@ -1,6 +1,8 @@
 // file components/FavoriteMusic.tsx
+// components/Favorite/FavoriteMusic.tsx
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -11,21 +13,23 @@ import {
 } from "react-native";
 import db from "../../db.json";
 
-type Props = {
-  navigateToPlayScreen: (song: any) => void;
-};
-
 const images: Record<string, any> = {
   cover: require("../../assets/images/cover.png"),
 };
 
-const FavoriteMusic: React.FC<Props> = ({ navigateToPlayScreen }) => {
+
+
+const FavoriteMusic = () => {
   const [favoriteSongs, setFavoriteSongs] = useState([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
     setFavoriteSongs(db.favorites);
   }, []);
 
+  const handlePressSong = (song: any) => {
+    navigation.navigate("PlayScreen", { song });
+  };
 
   return (
     <View style={styles.container}>
@@ -54,37 +58,32 @@ const FavoriteMusic: React.FC<Props> = ({ navigateToPlayScreen }) => {
         </View>
       </View>
 
-      {/* List Header */}
       <Text style={styles.sortText}>
         <Ionicons name="menu" size={24} color="#ccc" /> Sắp xếp
       </Text>
 
-      {/* List Songs */}
       <FlatList
         data={favoriteSongs}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.songItem}>
-            <TouchableOpacity
-              onPress={() => navigateToPlayScreen(item)}
-              style={styles.songItem}
-            >
-              <Image source={images[item.imageKey]} style={styles.cover} />
-              <View style={styles.info}>
-                <Text style={styles.songTitle} numberOfLines={1}>
-                  {item.title}
-                </Text>
-                <Text style={styles.artist}>{item.artist}</Text>
-              </View>
+          <TouchableOpacity
+            onPress={() => handlePressSong(item)}
+            style={styles.songItem}
+          >
+            <Image source={images[item.imageKey]} style={styles.cover} />
+            <View style={styles.info}>
+              <Text style={styles.songTitle} numberOfLines={1}>
+                {item.title}
+              </Text>
+              <Text style={styles.artist}>{item.artist}</Text>
+            </View>
 
-              <View style={styles.iconGroup}>
-                <FontAwesome name="thumbs-up" size={22} color="#1DB954" style={styles.icon} />
-                <FontAwesome name="thumbs-down" size={22} color="#888" style={styles.icon} />
-                <Ionicons name="ellipsis-vertical" size={20} color="#fff" style={styles.icon} />
-              </View>
-            </TouchableOpacity>
-
-          </View>
+            <View style={styles.iconGroup}>
+              <FontAwesome name="thumbs-up" size={22} color="#1DB954" style={styles.icon} />
+              <FontAwesome name="thumbs-down" size={22} color="#888" style={styles.icon} />
+              <Ionicons name="ellipsis-vertical" size={20} color="#fff" style={styles.icon} />
+            </View>
+          </TouchableOpacity>
         )}
       />
     </View>
@@ -103,7 +102,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginLeft: 10,
-    gap: 12, // nếu React Native của bạn không hỗ trợ 'gap', hãy thay bằng `marginRight`
+    gap: 12,
   },
   icon: {
     marginHorizontal: 6,

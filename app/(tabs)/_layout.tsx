@@ -1,8 +1,11 @@
+// file app/tabs/_layout.tsx
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-
+import { StatsProvider } from '../../components/Favorite/StatsContext';
 export default function TabLayout() {
   return (
+    <StatsProvider>
+
     <Tabs
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
@@ -19,5 +22,6 @@ export default function TabLayout() {
         headerShown: false,
       })}
     />
+</StatsProvider>
   );
 }

@@ -32,77 +32,87 @@
     }
   ],
   "favorites": [
-    {
-      "id": "1",
-      "title": "Lạc Trôi",
-      "artist": "Sơn Tùng M-TP",
-      "imageKey": "cover",
-      "audioUrl": "music.mp3"
-    },
-    {
-      "id": "2",
-      "title": "Chạy Ngay Đi",
-      "artist": "Sơn Tùng M-TP, Sia",
-      "imageKey": "cover",
-      "audioUrl": "music.mp3"
-    },
-    {
-      "id": "3",
-      "title": "Có Chắc Yêu Là Đây",
-      "artist": "Hứa Kim Tuyền, APJ",
-      "imageKey": "cover",
-      "audioUrl": "music.mp3"
-    },
-    {
-      "id": "4",
-      "title": "Đi Đu Đưa Đi",
-      "artist": "Bích Phương",
-      "imageKey": "cover",
-      "audioUrl": "music.mp3"
-    },
-    {
-      "id": "5",
-      "title": "Em Là Bà Nội Của Anh",
-      "artist": "HuyR",
-      "imageKey": "cover",
-      "audioUrl": "music.mp3"
-    },
-    {
-      "id": "6",
-      "title": "Bạc Phận",
-      "artist": "Jack, K-ICM",
-      "imageKey": "cover",
-      "audioUrl": "music.mp3"
-    },
-    {
-      "id": "7",
-      "title": "Sóng Gió",
-      "artist": "Jack, K-ICM",
-      "imageKey": "cover",
-      "audioUrl": "music.mp3"
-    },
-    {
-      "id": "8",
-      "title": "Người Âm Phủ",
-      "artist": "OSAD, Vũ",
-      "imageKey": "cover",
-      "audioUrl": "music.mp3"
-    },
-    {
-      "id": "9",
-      "title": "Yêu Đơn Phương",
-      "artist": "JustaTee, Sĩ Thanh",
-      "imageKey": "cover",
-      "audioUrl": "music.mp3"
-    },
-    {
-      "id": "10",
-      "title": "Hãy Trao Cho Anh",
-      "artist": "Sơn Tùng M-TP, Snoop Dogg",
-      "imageKey": "cover",
-      "audioUrl": "music.mp3"
-    }
-  ],
+  {
+    "id": "1",
+    "title": "Lạc Trôi",
+    "artist": "Sơn Tùng M-TP",
+    "genre": "Pop",
+    "imageKey": "cover",
+    "audioUrl": "music.mp3"
+  },
+  {
+    "id": "2",
+    "title": "Chạy Ngay Đi",
+    "artist": "Sơn Tùng M-TP, Sia",
+    "genre": "EDM",
+    "imageKey": "cover",
+    "audioUrl": "music.mp3"
+  },
+  {
+    "id": "3",
+    "title": "Có Chắc Yêu Là Đây",
+    "artist": "Hứa Kim Tuyền, APJ",
+    "genre": "Ballad",
+    "imageKey": "cover",
+    "audioUrl": "music.mp3"
+  },
+  {
+    "id": "4",
+    "title": "Đi Đu Đưa Đi",
+    "artist": "Bích Phương",
+    "genre": "Dance",
+    "imageKey": "cover",
+    "audioUrl": "music.mp3"
+  },
+  {
+    "id": "5",
+    "title": "Em Là Bà Nội Của Anh",
+    "artist": "HuyR",
+    "genre": "Pop",
+    "imageKey": "cover",
+    "audioUrl": "music.mp3"
+  },
+  {
+    "id": "6",
+    "title": "Bạc Phận",
+    "artist": "Jack, K-ICM",
+    "genre": "Folk",
+    "imageKey": "cover",
+    "audioUrl": "music.mp3"
+  },
+  {
+    "id": "7",
+    "title": "Sóng Gió",
+    "artist": "Jack, K-ICM",
+    "genre": "Folk",
+    "imageKey": "cover",
+    "audioUrl": "music.mp3"
+  },
+  {
+    "id": "8",
+    "title": "Người Âm Phủ",
+    "artist": "OSAD, Vũ",
+    "genre": "Rap",
+    "imageKey": "cover",
+    "audioUrl": "music.mp3"
+  },
+  {
+    "id": "9",
+    "title": "Yêu Đơn Phương",
+    "artist": "JustaTee, Sĩ Thanh",
+    "genre": "R&B",
+    "imageKey": "cover",
+    "audioUrl": "music.mp3"
+  },
+  {
+    "id": "10",
+    "title": "Hãy Trao Cho Anh",
+    "artist": "Sơn Tùng M-TP, Snoop Dogg",
+    "genre": "Hip-Hop",
+    "imageKey": "cover",
+    "audioUrl": "music.mp3"
+  }
+],
   "savedAlbums": [
     {
       "id": "1",
