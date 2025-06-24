@@ -14,7 +14,11 @@ import {
   View,
 } from "react-native";
 
-export default function SearchScreen() {
+type Props = {
+  navigateToPlayScreen: (song: any) => void;
+};
+
+const SearchScreen: React.FC<Props> = ({ navigateToPlayScreen }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const router = useRouter();
@@ -72,7 +76,8 @@ export default function SearchScreen() {
         data={results}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.item}>
+          <TouchableOpacity onPress={() => navigateToPlayScreen(item)}
+            style={styles.item}>
             <View style={styles.itemContent}>
               <Image source={images[item.image]} style={styles.image} />
               <View style={styles.textWrapper}>
@@ -90,6 +95,9 @@ export default function SearchScreen() {
     </View>
   );
 }
+
+export default SearchScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -144,9 +152,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   emptyText: {
-  color: "#aaa",
-  fontSize: 16,
-  textAlign: "center",
-  marginTop: 20,
-},
+    color: "#aaa",
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 20,
+  },
 });

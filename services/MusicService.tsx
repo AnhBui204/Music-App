@@ -1,13 +1,9 @@
 import axios from 'axios';
 
-<<<<<<< Updated upstream
-const API = 'http://192.168.106.210:4000'; 
-=======
-const API = 'http://192.168.106.210:4000';// đây là địa chỉ IP của Anh Bùi     
+const API = 'http://10.13.14.180:4000';// đây là địa chỉ IP của Anh Bùi     
 
-// const API = 'http://192.168.56.1:4000'; // đây là địa chỉ IP của Phương Anh
+// const API = 'http://192.168.56.1:4000'; // Phương Anh
 // lệnh chạy BE:  npx json-server --watch db.json --port 4000
->>>>>>> Stashed changes
 
 const MusicService = {
   getPlaylists: () => axios.get(`${API}/playlists`),
