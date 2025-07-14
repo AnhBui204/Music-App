@@ -31,8 +31,6 @@ const SearchScreen: React.FC<Props> = ({ navigateToPlayScreen }) => {
 
     try {
       const all = await MusicService.getAllSongs();
-      console.log("Tất cả bài hát:", all);
-
       const filtered = all.filter(
         (song) =>
           song.title?.toLowerCase().includes(query.toLowerCase()) ||

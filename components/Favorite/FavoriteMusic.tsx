@@ -1,7 +1,9 @@
 // file components/FavoriteMusic.tsx
 // components/Favorite/FavoriteMusic.tsx
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   FlatList,
@@ -11,24 +13,39 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import db from "../../db.json";
+import FavoriteService from '../../services/FavoriteService';
+import { useFavorites } from './FavoritesContext';
 
-const images: Record<string, any> = {
-  cover: require("../../assets/images/cover.png"),
-};
+import images from "@/constants/Images";
 
 
+const router = useRouter();
 
 const FavoriteMusic = () => {
   const [favoriteSongs, setFavoriteSongs] = useState([]);
   const navigation = useNavigation();
+  const [user, setUser] = useState(null);
+  const { favoriteIds } = useFavorites();
 
   useEffect(() => {
-    setFavoriteSongs(db.favorites);
+    const fetchFavorites = async () => {
+      const storedUser = await AsyncStorage.getItem('user');
+      const userStored = storedUser ? JSON.parse(storedUser) : null;
+      if (!userStored) return;
+
+      const songs = await FavoriteService.getFavoritesByUser(userStored.id);
+      setFavoriteSongs(songs);
+      setUser(userStored);
+    };
+
+    fetchFavorites();
   }, []);
 
   const handlePressSong = (song: any) => {
-    navigation.navigate("PlayScreen", { song });
+    router.push({
+      pathname: '/playscreen',
+      params: { song: JSON.stringify(song) },
+    });
   };
 
   return (
@@ -39,7 +56,7 @@ const FavoriteMusic = () => {
           <FontAwesome name="thumbs-up" size={72} color="white" />
         </View>
         <Text style={styles.title}>Nhạc đã thích</Text>
-        <Text style={styles.userName}>Phương Anh Đỗ</Text>
+        <Text style={styles.userName}>{user?.name || 'Tên người dùng'}</Text>
         <Text style={styles.songCount}>
           {favoriteSongs.length} bài hát • Hơn 17 giờ
         </Text>
@@ -63,14 +80,14 @@ const FavoriteMusic = () => {
       </Text>
 
       <FlatList
-        data={favoriteSongs}
+        data={favoriteSongs.filter(song => favoriteIds.includes(song.id))}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => handlePressSong(item)}
             style={styles.songItem}
           >
-            <Image source={images[item.imageKey]} style={styles.cover} />
+            <Image source={images[item.image]} style={styles.cover} />
             <View style={styles.info}>
               <Text style={styles.songTitle} numberOfLines={1}>
                 {item.title}

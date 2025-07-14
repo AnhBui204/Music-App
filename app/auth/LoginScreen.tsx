@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import {
   Button,
@@ -15,7 +15,21 @@ WebBrowser.maybeCompleteAuthSession();
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const checkLogin = async () => {
+      const storedUser = await AsyncStorage.getItem('user');
+      if (storedUser) {
+        router.replace('../(tabs)/home');
+      } else {
+        setLoading(false);
+      }
+    };
+    checkLogin();
+  }, []);
+
+  if (loading) return null;
 
   const handleLogin = async () => {
     if (!username || !password) {

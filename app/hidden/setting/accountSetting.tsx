@@ -1,97 +1,123 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import AuthService from '@/services/AuthService';
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
 import {
-    Alert,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    ToastAndroid,
-    TouchableOpacity,
-    View,
-} from "react-native";
-import { user } from "../../../data/mock";
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View
+} from 'react-native';
 
 export default function AccountSettings() {
+  const [userData, setUserData] = useState(null);
+
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const stored = await AsyncStorage.getItem('user');
+      if (!stored) return;
+      const parsed = JSON.parse(stored);
+      const result = await AuthService.getUser(parsed.id);
+      if (result.success) {
+        setUserData(result.user);
+      }
+    };
+    fetchUserData();
+  }, []);
+
+
+  const handleLogout = async () => {
+    Alert.alert('Đăng xuất', 'Bạn có chắc muốn đăng xuất?', [
+      { text: 'Hủy', style: 'cancel' },
+      {
+        text: 'Đăng xuất',
+        style: 'destructive',
+        onPress: async () => {
+          await AsyncStorage.removeItem('user');
+          ToastAndroid.show('Đã đăng xuất thành công', ToastAndroid.SHORT);
+          router.replace('/auth/LoginScreen');
+        }
+      }
+    ]);
+  };
 
   const handleDeleteAccount = () => {
     Alert.alert(
-      "Delete Account",
-      "Are you sure you want to delete your account? This action cannot be undone.",
+      'Xóa tài khoản',
+      'Bạn có chắc chắn muốn xóa tài khoản? Hành động này không thể hoàn tác.',
       [
-        { text: "Cancel", style: "cancel" },
+        { text: 'Hủy', style: 'cancel' },
         {
-          text: "Delete",
-          style: "destructive",
+          text: 'Xóa',
+          style: 'destructive',
           onPress: () => {
-            console.log("Account deleted");
-            ToastAndroid.show(
-              "Account deleted successfully",
-              ToastAndroid.SHORT
-            );
-          },
-        },
+            console.log('Account deleted');
+            ToastAndroid.show('Tài khoản đã bị xóa', ToastAndroid.SHORT);
+          }
+        }
       ]
     );
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      {/* Back Arrow Header */}
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
+      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={24} color="#000" />
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Account Settings</Text>
+        <Text style={styles.headerTitle}>Cài đặt tài khoản</Text>
         <View style={{ width: 24 }} />
       </View>
 
-      {/* Main Scrollable Content */}
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.heading}>Account Info</Text>
+        <Text style={styles.heading}>Thông tin tài khoản</Text>
 
         <View style={styles.infoBox}>
-          <Text style={styles.label}>Username</Text>
-          <Text style={styles.value}>{user?.name || "N/A"}</Text>
+          <Text style={styles.label}>Tên người dùng</Text>
+          <Text style={styles.value}>{userData?.name || 'N/A'}</Text>
         </View>
 
         <View style={styles.infoBox}>
           <Text style={styles.label}>Email</Text>
-          <Text style={styles.value}>{user?.email || "N/A"}</Text>
+          <Text style={styles.value}>{userData?.email || 'N/A'}</Text>
         </View>
 
         <View style={styles.infoBox}>
-          <Text style={styles.label}>Joined date</Text>
-          <Text style={styles.value}>{user?.joined || "N/A"}</Text>
+          <Text style={styles.label}>Ngày tạo tài khoản</Text>
+          <Text style={styles.value}>{userData?.joined || 'N/A'}</Text>
         </View>
 
-        <Text style={styles.subHeading}>Your Plan</Text>
+        <Text style={styles.subHeading}>Gói của bạn</Text>
         <View style={styles.planCard}>
-          <Text style={styles.planName}>{user?.plan || "Free"}</Text>
+          <Text style={styles.planName}>{userData?.plan || 'Free'}</Text>
           <Text style={styles.planDescription}>
-            {user?.plan === "Free"
-              ? "Basic access to music streaming with ads."
-              : user?.plan === "Premium"
-              ? "Ad-free listening, offline downloads, and more."
-              : "Lifetime access with all premium features forever."}
+            {userData?.plan === 'Free'
+              ? 'Nghe nhạc cơ bản có quảng cáo.'
+              : userData?.plan === 'Premium'
+                ? 'Nghe không quảng cáo, tải offline, và nhiều hơn nữa.'
+                : 'Quyền truy cập vĩnh viễn tất cả các tính năng Premium.'}
           </Text>
         </View>
 
-        <TouchableOpacity
-          onPress={handleDeleteAccount}
-          style={styles.deleteWrapper}
-        >
+        <TouchableOpacity onPress={handleDeleteAccount} style={styles.deleteWrapper}>
           <Text style={styles.deleteText}>
-            {"To delete your data permanently, "}
-            <Text style={styles.deleteTextUnderline}>
-              {"close your account"}
-            </Text>
-            {"."}
+            {'Để xóa dữ liệu vĩnh viễn, '}
+            <Text style={styles.deleteTextUnderline}>{'xóa tài khoản của bạn'}</Text>
+            {'.'}
           </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>Đăng xuất</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -100,87 +126,97 @@ export default function AccountSettings() {
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 16,
     paddingTop: 35,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-    backgroundColor: "#fff",
-    justifyContent: "space-between",
+    borderBottomColor: '#eee',
+    backgroundColor: '#000',
+    justifyContent: 'space-between'
   },
   backButton: {
-    padding: 4,
+    padding: 4
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#000",
+    fontWeight: 'bold',
+    color: '#fff'
   },
   container: {
     paddingHorizontal: 16,
-    paddingBottom: 32,
+    paddingBottom: 32
   },
   heading: {
     fontSize: 22,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     paddingTop: 13,
     marginBottom: 13,
+    color: '#fff'
   },
   subHeading: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginTop: 24,
     marginBottom: 12,
+    color: '#fff'
   },
   infoBox: {
     marginBottom: 12,
     padding: 10,
     borderRadius: 8,
+    backgroundColor: '#1a1a1a'
   },
   label: {
     fontSize: 15,
-    color: "#555",
+    color: '#999'
   },
   value: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#000",
+    fontWeight: '600',
+    color: '#fff'
   },
   planCard: {
-    backgroundColor: "#fff5e5",
+    backgroundColor: '#fff5e5',
     borderRadius: 12,
-    padding: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    elevation: 3,
+    padding: 16
   },
   planName: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#d2691e",
-    marginBottom: 4,
+    fontWeight: 'bold',
+    color: '#d2691e',
+    marginBottom: 4
   },
   planDescription: {
     fontSize: 14,
-    color: "#555",
+    color: '#555'
   },
   deleteWrapper: {
     marginTop: 28,
-    alignItems: "center",
+    alignItems: 'center'
   },
   deleteText: {
     fontSize: 14,
-    color: "#d9534f",
-    textAlign: "center",
+    color: '#d9534f',
+    textAlign: 'center'
   },
   deleteTextUnderline: {
     fontSize: 14,
-    color: "#d9534f",
-    textDecorationLine: "underline",
-    fontWeight: "bold",
+    color: '#d9534f',
+    textDecorationLine: 'underline',
+    fontWeight: 'bold'
   },
+  logoutButton: {
+    marginTop: 32,
+    backgroundColor: '#2ecc71',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center'
+  },
+  logoutButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold'
+  }
 });

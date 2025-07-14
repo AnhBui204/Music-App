@@ -1,7 +1,8 @@
 // file components/Favorite/PlayScreen.tsx
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { Audio } from "expo-av";
+import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
     Animated,
@@ -13,11 +14,15 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import db from "../../db.json";
+import FavoriteService from "../../services/FavoriteService";
 import { useStats } from "./StatsContext"; // Assuming you have a StatsContext for play count
 
+import images from "@/constants/Images";
+import MusicService from "@/services/MusicService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFavorites } from './FavoritesContext';
+
 const IMAGES = {
-    cover: require("../../assets/images/cover1.png"),
     cdDisk: require("../../assets/images/cd_disk.png"),
 };
 
@@ -27,23 +32,70 @@ const PLAY_MODES = {
     SHUFFLE: "shuffle",
 };
 
-const PlayScreen = ({ route, navigation }) => {
-    const { song: initialSong } = route.params;
+type Props = {
+    params: any;
+};
+
+const PlayScreen = ({ params }: Props) => {
+    const song = typeof params.song === 'string' ? JSON.parse(params.song) : params.song;
     const { incrementPlayCount } = useStats();
-
-
+    const [user, setUser] = useState(null);
+    const { favoriteIds, addFavorite, removeFavorite } = useFavorites();
 
     const [isPlaying, setIsPlaying] = useState(false);
     const [position, setPosition] = useState(0);
     const [duration, setDuration] = useState(0);
     const [mode, setMode] = useState(PLAY_MODES.REPEAT_ONE);
     const [isLiked, setIsLiked] = useState(false);
-    const [currentSong, setCurrentSong] = useState(initialSong);
+    const [currentSong, setCurrentSong] = useState(song);
     const [songs, setSongs] = useState([]);
 
     const soundRef = useRef(null);
     const spinValue = useRef(new Animated.Value(0)).current;
     const rotationRef = useRef(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const storedUser = await AsyncStorage.getItem('user');
+            const userStored = storedUser ? JSON.parse(storedUser) : null;
+            setUser(userStored);
+        };
+
+        fetchUser();
+
+        const getAllSongs = async () => {
+            try {
+                const songs = await MusicService.getAllSongs();
+                setSongs(songs);
+            } catch (error) {
+                console.error("Lỗi tải danh sách bài hát:", error);
+            }
+        };
+
+        getAllSongs();
+
+    }, []);
+
+
+
+
+    useEffect(() => {
+        if (!user || !song) return;
+
+        const checkIfLiked = async () => {
+            try {
+                const res = await FavoriteService.getFavorites();
+                const liked = res.data.some(
+                    (fav: any) => fav.id === song.id && fav.userId === user.id
+                );
+                setIsLiked(liked);
+            } catch (err) {
+                console.error("Lỗi kiểm tra favorite:", err);
+            }
+        };
+
+        checkIfLiked();
+    }, [user, song]);
 
     const spin = spinValue.interpolate({
         inputRange: [0, 1],
@@ -51,10 +103,10 @@ const PlayScreen = ({ route, navigation }) => {
     });
 
     useEffect(() => {
-        if (initialSong) {
-            handleSongSelect(initialSong);
+        if (song) {
+            handleSongSelect(song);
         }
-    
+
         return () => {
             if (soundRef.current) {
                 soundRef.current.unloadAsync();
@@ -70,11 +122,7 @@ const PlayScreen = ({ route, navigation }) => {
         }
     }, [isPlaying]);
 
-    useEffect(() => {
-        setSongs(db.favorites);
-    }, []);
 
-    
 
     const loadAudio = async () => {
         if (soundRef.current) {
@@ -97,7 +145,7 @@ const PlayScreen = ({ route, navigation }) => {
             await soundRef.current.unloadAsync();
             soundRef.current = null;
         }
-    
+
         setCurrentSong(newSong);
         setPosition(0);
         incrementPlayCount(newSong.title);
@@ -184,7 +232,7 @@ const PlayScreen = ({ route, navigation }) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
+                <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
                     <Ionicons name="chevron-back" size={28} color="#fff" />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Đang phát</Text>
@@ -195,8 +243,8 @@ const PlayScreen = ({ route, navigation }) => {
                 <Animated.Image
                     source={IMAGES.cdDisk}
                     style={[styles.cdDisk, { transform: [{ rotate: spin }] }]}
-/>
-                <Image source={IMAGES[currentSong.imageKey]} style={styles.coverOnDisk} />
+                />
+                <Image source={images[currentSong.image]} style={styles.coverOnDisk} />
             </View>
 
             <View style={styles.infoBox}>
@@ -225,7 +273,7 @@ const PlayScreen = ({ route, navigation }) => {
                     <MaterialIcons
                         name={
                             mode === PLAY_MODES.REPEAT_ONE ? "repeat-one" :
-                            mode === PLAY_MODES.REPEAT_ALL ? "repeat" : "shuffle"
+                                mode === PLAY_MODES.REPEAT_ALL ? "repeat" : "shuffle"
                         }
                         size={28}
                         color="#1DB954"
@@ -243,10 +291,23 @@ const PlayScreen = ({ route, navigation }) => {
                 <TouchableOpacity onPress={skipToNextSong}>
                     <Ionicons name="play-skip-forward" size={34} color="#bbb" />
                 </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => setIsLiked(!isLiked)}>
-                    <Ionicons name="thumbs-up" size={28} color={isLiked ? "#1DB954" : "#bbb"} />
+                <TouchableOpacity
+                    onPress={() =>
+                        favoriteIds.includes(currentSong.id)
+                            ? removeFavorite(currentSong.id, user.id)
+                            : addFavorite(currentSong, user.id)
+                    }
+                >
+                    <FontAwesome
+                        name={favoriteIds.includes(currentSong.id) ? "heart" : "heart-o"}
+                        size={24}
+                        color={favoriteIds.includes(currentSong.id) ? "#1DB954" : "#fff"}
+                    />
                 </TouchableOpacity>
+
+
+
+
             </View>
 
             <View style={styles.songListContainer}>
@@ -263,7 +324,7 @@ const PlayScreen = ({ route, navigation }) => {
                             onPress={() => handleSongSelect(item)}
                         >
                             <Image
-                            source={IMAGES[item.imageKey]}
+                                source={images[item.image]}
                                 style={styles.songThumb}
                             />
                             <View style={styles.songInfo}>

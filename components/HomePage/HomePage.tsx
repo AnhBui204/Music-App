@@ -1,7 +1,7 @@
 import Header from '@/components/Header/Header';
 import MusicService from '@/services/MusicService'; // File API call
 import { DrawerActions } from '@react-navigation/native';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
+import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   Dimensions,
@@ -53,24 +53,26 @@ const PlaylistCard = ({ item }: { item: PlaylistItem }) => (
   </TouchableOpacity>
 );
 
-const SongCard = ({ item }: { item: SongItem }) => (
-  <TouchableOpacity style={styles.songCard}>
+const SongCard = ({ item, onPress }: { item: SongItem; onPress: (song: SongItem) => void }) => (
+  <TouchableOpacity style={styles.songCard} onPress={() => onPress(item)}>
     <Image source={images[item.image]} style={styles.songCardImage} />
     <Text style={styles.songCardTitle} numberOfLines={1}>{item.title}</Text>
     <Text style={styles.songCardArtist} numberOfLines={1}>{item.artist}</Text>
   </TouchableOpacity>
 );
 
-const SongRow = ({ song }: { song: SongItem }) => (
-  <View style={styles.songRow}>
+
+const SongRow = ({ song, onPress }: { song: SongItem; onPress: (song: SongItem) => void }) => (
+  <TouchableOpacity style={styles.songRow} onPress={() => onPress(song)}>
     <Image source={images[song.image]} style={styles.songRowImage} />
     <View style={{ flex: 1 }}>
       <Text style={styles.songRowTitle}>{song.title}</Text>
       <Text style={styles.songRowArtist}>{song.artist}</Text>
     </View>
     <Icon name="play-circle-outline" size={28} color="#1DB954" />
-  </View>
+  </TouchableOpacity>
 );
+
 
 export default function HomeScreen() {
   const params = useLocalSearchParams();
@@ -80,20 +82,23 @@ export default function HomeScreen() {
   const [recommendedSongs, setRecommendedSongs] = useState<SongItem[]>([]);
   const [newReleases, setNewReleases] = useState<SongItem[]>([]);
   const [trendingNow, setTrendingNow] = useState<SongItem[]>([]);
+  const [popularSongs, setPopularSongs] = useState<SongItem[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [pl, rec, news, trend] = await Promise.all([
+        const [pl, rec, news, trend, popu] = await Promise.all([
           MusicService.getPlaylists(),
           MusicService.getRecommended(),
           MusicService.getNewReleases(),
           MusicService.getTrending(),
+          MusicService.getPopularSongs(),
         ]);
         setPlaylists(pl.data);
         setRecommendedSongs(rec.data);
         setNewReleases(news.data);
         setTrendingNow(trend.data);
+        setPopularSongs(popu.data);
       } catch (err) {
         console.error("Lỗi tải dữ liệu:", err);
       }
@@ -101,6 +106,13 @@ export default function HomeScreen() {
     fetchData();
   }, []);
   const navigation = useNavigation();
+
+  const handleSongPress = (song: any) => {
+    router.push({
+      pathname: '/playscreen',
+      params: { song: JSON.stringify(song) },
+    });
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -126,7 +138,7 @@ export default function HomeScreen() {
         renderItem={({ item }) => (
           <View style={styles.gridWrapper}>
             {item.map((song) => (
-              <SongCard key={song.id} item={song} />
+              <SongCard key={song.id} item={song} onPress={handleSongPress} />
             ))}
           </View>
         )}
@@ -143,7 +155,7 @@ export default function HomeScreen() {
         renderItem={({ item }) => (
           <View style={styles.songRowChunk}>
             {item.map((song) => (
-              <SongRow key={song.id} song={song} />
+              <SongRow key={song.id} song={song} onPress={handleSongPress} />
             ))}
           </View>
         )}
@@ -160,7 +172,7 @@ export default function HomeScreen() {
         renderItem={({ item }) => (
           <View style={styles.songRowChunk}>
             {item.map((song) => (
-              <SongRow key={song.id} song={song} />
+              <SongRow key={song.id} song={song} onPress={handleSongPress} />
             ))}
           </View>
         )}
@@ -168,6 +180,24 @@ export default function HomeScreen() {
         snapToInterval={width}
         decelerationRate="fast"
       />
+
+      <SectionTitle title="📊 Phổ Biến" />
+      <FlatList
+        horizontal
+        data={chunkArray(popularSongs, 4)}
+        keyExtractor={(_, index) => 'popular' + index}
+        renderItem={({ item }) => (
+          <View style={styles.songRowChunk}>
+            {item.map((song) => (
+              <SongRow key={song.id} song={song} onPress={handleSongPress} />
+            ))}
+          </View>
+        )}
+        showsHorizontalScrollIndicator={false}
+        snapToInterval={width}
+        decelerationRate="fast"
+      />
+
     </ScrollView>
   );
 }
@@ -277,6 +307,7 @@ const styles = StyleSheet.create({
   },
   songRowChunk: {
     width,
-    paddingRight: 40, // tránh bị sát lề phải
+    paddingRight: 40, 
+    marginBottom: 16,
   },
 });

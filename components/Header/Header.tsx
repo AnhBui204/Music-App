@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import GenreButton from "./GenreButton";
 
-export default function Header() {
+export default function Header({ openDrawer }: { openDrawer: () => void }) {
     const router = useRouter();
 
     return (

@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://10.13.14.180:4000/users'; //đây là địa chỉ IP của Anh Bùi  
+// const API_URL = 'http://10.13.2.126:4000/users'; //đây là địa chỉ IP của FPT  
+const API_URL = 'http://192.168.106.210:4000/users'; //đây là địa chỉ IP của Anh Bùi  
 
 // const API_URL = 'http://192.168.56.1:4000/users'; // IP của Phương Anh 
 
@@ -66,5 +67,15 @@ const register = async (user: {
   }
 };
 
+const getUser = async (id: string) => {
+  try {
+    const res = await axios.get(`${API_URL}/${id}`);
+    return { success: true, user: res.data };
+  } catch (error: any) {
+    console.log('Get user error:', error?.response?.data || error.message || error);
+    return { success: false, error: 'Không thể lấy thông tin người dùng' };
+  }
+};
 
-export default { login, register };
+
+export default { login, register, getUser };
