@@ -1,18 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import {
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import MiniPlayer from '../../../components/Favorite/MiniPlayer';
+import { useMusic } from '../../../components/Favorite/MusicContext';
 
 export default function DataSavingScreen() {
   const navigation = useNavigation();
+  const { currentSong, isPlaying, togglePlay } = useMusic();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       {/* Back Arrow Header */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -27,7 +31,11 @@ export default function DataSavingScreen() {
       <View style={styles.content}>
         <Text style={styles.text}>About.</Text>
       </View>
-    </SafeAreaView>
+      </SafeAreaView>
+      
+      {/* Mini Player */}
+      <MiniPlayer song={currentSong} isPlaying={isPlaying} togglePlay={togglePlay} />
+    </View>
   );
 }
 

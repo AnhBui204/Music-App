@@ -1,3 +1,5 @@
+import MiniPlayer from '@/components/Favorite/MiniPlayer';
+import { useMusic } from '@/components/Favorite/MusicContext';
 import { artists, playLists, recentlyLikedSongs, user } from "@/data/mock";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -12,9 +14,11 @@ import {
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
+  const { currentSong, isPlaying, togglePlay } = useMusic();
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={{ flex: 1, backgroundColor: 'black' }}>
+      <ScrollView style={styles.container}>
       {/* Profile Header */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -121,7 +125,11 @@ export default function ProfileScreen() {
       </View>
 
       <View style={{ height: 80 }} />
-    </ScrollView>
+      </ScrollView>
+      
+      {/* Mini Player */}
+      <MiniPlayer song={currentSong} isPlaying={isPlaying} togglePlay={togglePlay} />
+    </View>
   );
 }
 

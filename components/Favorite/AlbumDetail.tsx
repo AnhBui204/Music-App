@@ -1,7 +1,7 @@
 // file components/AlbumDetail.tsx
 
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   FlatList,
   Image,
@@ -12,7 +12,8 @@ import {
   View,
 } from "react-native";
 import db from "../../db.json";
-
+import MiniPlayer from './MiniPlayer';
+import { useMusic } from './MusicContext';
 const images: Record<string, any> = {
   cover: require("../../assets/images/cover.png"),
 };
@@ -21,6 +22,8 @@ const AlbumDetail = ({ album, goBack }: any) => {
   const [songs, setSongs] = useState(db.favorites.slice(0, 5));
   const [selectedSongId, setSelectedSongId] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
+  
+  const { currentSong, isPlaying, togglePlay } = useMusic();
 
   const handleRemove = () => {
     setSongs((prevSongs) => prevSongs.filter((s) => s.id !== selectedSongId));
@@ -99,12 +102,13 @@ const AlbumDetail = ({ album, goBack }: any) => {
           </View>
         </TouchableOpacity>
       </Modal>
+      <MiniPlayer song={currentSong} isPlaying={isPlaying} togglePlay={togglePlay} />
+
     </View>
+    
   );
   
 };
-
-
 
 export default AlbumDetail;
 

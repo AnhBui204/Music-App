@@ -1,4 +1,3 @@
-// file components/FavoriteMusic.tsx
 // components/Favorite/FavoriteMusic.tsx
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -12,24 +11,33 @@ import {
   View,
 } from "react-native";
 import db from "../../db.json";
+import MiniPlayer from './MiniPlayer';
+import { useMusic } from './MusicContext';
 
 const images: Record<string, any> = {
   cover: require("../../assets/images/cover.png"),
 };
 
 
-
 const FavoriteMusic = () => {
   const [favoriteSongs, setFavoriteSongs] = useState([]);
   const navigation = useNavigation();
+
+  const { currentSong, isPlaying, togglePlay, playSong } = useMusic();
 
   useEffect(() => {
     setFavoriteSongs(db.favorites);
   }, []);
 
-  const handlePressSong = (song: any) => {
-    navigation.navigate("PlayScreen", { song });
+  // const handlePressSong = (song: any) => {
+  //   navigation.navigate("PlayScreen", { song });
+  // };
+   
+  const handlePressSong = async (song) => {
+    await playSong(song); // Thực sự bắt đầu phát nhạc
+    navigation.navigate('PlayScreen', { song });
   };
+
 
   return (
     <View style={styles.container}>
@@ -86,11 +94,14 @@ const FavoriteMusic = () => {
           </TouchableOpacity>
         )}
       />
+          <MiniPlayer song={currentSong} isPlaying={isPlaying} togglePlay={togglePlay} />
+
     </View>
   );
 };
 
 export default FavoriteMusic;
+
 
 const styles = StyleSheet.create({
   container: {

@@ -1,15 +1,19 @@
+// file: components/Favorite/Statistics.tsx
 import { Ionicons } from '@expo/vector-icons';
+import { useEffect, useRef } from 'react';
 import {
-    Dimensions,
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  Animated,
+  Dimensions,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
+import MiniPlayer from './MiniPlayer';
+import { useMusic } from './MusicContext';
 import { useStats } from './StatsContext';
-
 const screenWidth = Dimensions.get('window').width;
 
 // Image map dùng ảnh tĩnh
@@ -19,8 +23,23 @@ const IMAGE_MAP = {
   cdDisk: require('../../assets/images/cd_disk.png'),
 };
 
+
+
 const Statistics = () => {
   const { playCounts } = useStats();
+
+  const { currentSong, isPlaying, togglePlay } = useMusic();
+
+  const underlineAnim = useRef(new Animated.Value(0)).current;
+
+
+  useEffect(() => {
+    Animated.timing(underlineAnim, {
+      toValue: 60, // final width
+      duration: 500,
+      useNativeDriver: false,
+    }).start();
+  }, []);
 
   const totalSongs = Object.keys(playCounts).length;
   const totalPlays = Object.values(playCounts).reduce(
@@ -43,10 +62,16 @@ const Statistics = () => {
     .slice(0, 3);
 
   return (
+    <>
     <ScrollView style={styles.container}>
       <View style={styles.sectionTitleWrapper}>
         <Text style={styles.sectionTitle}>Thống kê Nghe Nhạc</Text>
-        <View style={styles.underline} />
+        <Animated.View
+          style={[
+            styles.underline,
+            { width: underlineAnim }
+          ]}
+        />
       </View>
 
       {/* Tổng quan */}
@@ -65,10 +90,15 @@ const Statistics = () => {
 
       {/* Bar Chart */}
       <View style={styles.sectionTitleWrapper}>
-  <Text style={styles.sectionTitle}>Lượt nghe theo thể loại</Text>
-  <View style={styles.underline} />
-</View>
-          
+        <Text style={styles.sectionTitle}>Lượt nghe theo thể loại</Text>
+        <Animated.View
+          style={[
+            styles.underline,
+            { width: underlineAnim }
+          ]}
+        />
+      </View>
+
       <BarChart
         data={{
           labels: Object.keys(genreMap),
@@ -99,7 +129,12 @@ const Statistics = () => {
       {/* Top 3 bài hát */}
       <View style={styles.sectionTitleWrapper}>
         <Text style={styles.sectionTitle}>Top 3 bài hát nghe nhiều nhất</Text>
-        <View style={styles.underline} />
+        <Animated.View
+          style={[
+            styles.underline,
+            { width: underlineAnim }
+          ]}
+        />
       </View>
       <View style={styles.topContainer}>
         {topSongs.map(([title, data], index) => {
@@ -136,7 +171,9 @@ const Statistics = () => {
           );
         })}
       </View>
-    </ScrollView>
+      </ScrollView>
+      <MiniPlayer song={currentSong} isPlaying={isPlaying} togglePlay={togglePlay} />
+      </>
   );
 };
 
@@ -218,23 +255,23 @@ const styles = StyleSheet.create({
   songSubtitle: {
     color: '#bbb',
     fontSize: 13,
-    },
-    sectionTitleWrapper: {
-        marginTop: 20,
-        marginBottom: 10,
-      },
-      sectionTitle: {
-        fontSize: 18,
-        color: '#fff',
-        fontWeight: 'bold',
-        textAlign: 'left',
-        marginBottom: 5,
-      },
-      underline: {
-        width: 50,
-        height: 3,
-        backgroundColor: '#1DB954',
-        borderRadius: 3,
-      },
-      
+  },
+  sectionTitleWrapper: {
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'left',
+    marginBottom: 5,
+  },
+  underline: {
+    width: 50,
+    height: 3,
+    backgroundColor: '#1DB954',
+    borderRadius: 3,
+  },
+
 });

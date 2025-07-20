@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import db from "../../db.json";
 import AlbumDetail from "./AlbumDetail";
+import MiniPlayer from './MiniPlayer';
+import { useMusic } from './MusicContext';
 
 const images: Record<string, any> = {
   cover: require("../../assets/images/cover.png"),
@@ -19,6 +21,8 @@ const images: Record<string, any> = {
 const SavedAlbums: React.FC = () => {
     const [albums, setAlbums] = useState([]);
     const [selectedAlbum, setSelectedAlbum] = useState(null);
+  
+    const { currentSong, isPlaying, togglePlay } = useMusic();
 
   useEffect(() => {
     setAlbums(db.savedAlbums); // db.json cần có savedAlbums
@@ -58,6 +62,8 @@ const SavedAlbums: React.FC = () => {
         columnWrapperStyle={{ justifyContent: "space-between" }}
         showsVerticalScrollIndicator={false}
       />
+      <MiniPlayer song={currentSong} isPlaying={isPlaying} togglePlay={togglePlay} />
+
     </View>
   );
 };

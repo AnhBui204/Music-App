@@ -1,19 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import {
-    Alert,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    ToastAndroid,
-    TouchableOpacity,
-    View,
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import MiniPlayer from '../../../components/Favorite/MiniPlayer';
+import { useMusic } from '../../../components/Favorite/MusicContext';
 import { user } from "../../../data/mock";
 
 export default function AccountSettings() {
   const navigation = useNavigation();
+  const { currentSong, isPlaying, togglePlay } = useMusic();
 
   const handleDeleteAccount = () => {
     Alert.alert(
@@ -37,7 +40,8 @@ export default function AccountSettings() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       {/* Back Arrow Header */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -94,7 +98,11 @@ export default function AccountSettings() {
           </Text>
         </TouchableOpacity>
       </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+      
+      {/* Mini Player */}
+      <MiniPlayer song={currentSong} isPlaying={isPlaying} togglePlay={togglePlay} />
+    </View>
   );
 }
 

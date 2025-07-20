@@ -1,5 +1,8 @@
+// file : components/HomePage/HomePage.tsx
+import MiniPlayer from '@/components/Favorite/MiniPlayer';
+import { useMusic } from '@/components/Favorite/MusicContext';
 import Header from '@/components/Header/Header';
-import MusicService from '@/services/MusicService'; // File API call
+import MusicService from '@/services/MusicService';
 import { DrawerActions } from '@react-navigation/native';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -65,14 +68,13 @@ const images: Record<string, any> = {
   cover: require("../../assets/images/cover.png"),
 };
 
-
 const { width } = Dimensions.get('window');
 
 type SongItem = {
   id: string;
   title: string;
   artist: string;
-  image: string; // URI string từ db
+  image: string;
   duration?: string;
 };
 
@@ -123,6 +125,13 @@ const SongRow = ({ song }: { song: SongItem }) => (
 export default function HomeScreen() {
   const params = useLocalSearchParams();
   const user = typeof params.user === 'string' ? JSON.parse(params.user) : params.user;
+  const navigation = useNavigation();
+
+  const {
+    currentSong,
+    isPlaying,
+    togglePlay,
+  } = useMusic();
 
   const [playlists, setPlaylists] = useState<PlaylistItem[]>([]);
   const [recommendedSongs, setRecommendedSongs] = useState<SongItem[]>([]);
@@ -148,75 +157,79 @@ export default function HomeScreen() {
     };
     fetchData();
   }, []);
-  const navigation = useNavigation();
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Header openDrawer={() => navigation.dispatch(DrawerActions.openDrawer())} />
-      </View>
+    <View style={{ flex: 1 }}>
+      <ScrollView style={styles.container}>
+        <View style={styles.header}>
+          <Header openDrawer={() => navigation.dispatch(DrawerActions.openDrawer())} />
+        </View>
 
-      <SectionTitle title="🔥 Playlist Gợi Ý" />
-      <FlatList
-        horizontal
-        data={playlists}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <PlaylistCard item={item} />}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingLeft: 16, paddingBottom: 12 }}
-      />
+        <SectionTitle title="🔥 Playlist Gợi Ý" />
+        <FlatList
+          horizontal
+          data={playlists}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <PlaylistCard item={item} />}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingLeft: 16, paddingBottom: 12 }}
+        />
 
-      <SectionTitle title="🎧 Nhạc Đề Xuất" />
-      <FlatList
-        horizontal
-        data={chunkArray(recommendedSongs, 4)}
-        keyExtractor={(_, index) => 'rec' + index}
-        renderItem={({ item }) => (
-          <View style={styles.gridWrapper}>
-            {item.map((song) => (
-              <SongCard key={song.id} item={song} />
-            ))}
-          </View>
-        )}
-        showsHorizontalScrollIndicator={false}
-        snapToInterval={width}
-        decelerationRate="fast"
-      />
+        <SectionTitle title="🎧 Nhạc Đề Xuất" />
+        <FlatList
+          horizontal
+          data={chunkArray(recommendedSongs, 4)}
+          keyExtractor={(_, index) => 'rec' + index}
+          renderItem={({ item }) => (
+            <View style={styles.gridWrapper}>
+              {item.map((song) => (
+                <SongCard key={song.id} item={song} />
+              ))}
+            </View>
+          )}
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={width}
+          decelerationRate="fast"
+        />
 
-      <SectionTitle title="🆕 Nhạc Mới Phát Hành" />
-      <FlatList
-        horizontal
-        data={chunkArray(newReleases, 4)}
-        keyExtractor={(_, index) => 'new' + index}
-        renderItem={({ item }) => (
-          <View style={styles.songRowChunk}>
-            {item.map((song) => (
-              <SongRow key={song.id} song={song} />
-            ))}
-          </View>
-        )}
-        showsHorizontalScrollIndicator={false}
-        snapToInterval={width}
-        decelerationRate="fast"
-      />
+        <SectionTitle title="🆕 Nhạc Mới Phát Hành" />
+        <FlatList
+          horizontal
+          data={chunkArray(newReleases, 4)}
+          keyExtractor={(_, index) => 'new' + index}
+          renderItem={({ item }) => (
+            <View style={styles.songRowChunk}>
+              {item.map((song) => (
+                <SongRow key={song.id} song={song} />
+              ))}
+            </View>
+          )}
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={width}
+          decelerationRate="fast"
+        />
 
-      <SectionTitle title="📈 Thịnh Hành" />
-      <FlatList
-        horizontal
-        data={chunkArray(trendingNow, 4)}
-        keyExtractor={(_, index) => 'trend' + index}
-        renderItem={({ item }) => (
-          <View style={styles.songRowChunk}>
-            {item.map((song) => (
-              <SongRow key={song.id} song={song} />
-            ))}
-          </View>
-        )}
-        showsHorizontalScrollIndicator={false}
-        snapToInterval={width}
-        decelerationRate="fast"
-      />
-    </ScrollView>
+        <SectionTitle title="📈 Thịnh Hành" />
+        <FlatList
+          horizontal
+          data={chunkArray(trendingNow, 4)}
+          keyExtractor={(_, index) => 'trend' + index}
+          renderItem={({ item }) => (
+            <View style={styles.songRowChunk}>
+              {item.map((song) => (
+                <SongRow key={song.id} song={song} />
+              ))}
+            </View>
+          )}
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={width}
+          decelerationRate="fast"
+        />
+      </ScrollView>
+
+      {/* Gắn MiniPlayer vào cuối màn hình */}
+      <MiniPlayer song={currentSong} isPlaying={isPlaying} togglePlay={togglePlay} />
+    </View>
   );
 }
 
