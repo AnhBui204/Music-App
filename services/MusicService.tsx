@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 // const API = 'http://10.13.2.126:4000';// đây là địa chỉ IP của FPT     
-const API = 'http://192.168.106.210:4000'; //đây là địa chỉ IP của Anh Bùi  
+// const API = 'http://192.168.106.210:4000'; //đây là địa chỉ IP của Anh Bùi  
 
-// const API = 'http://192.168.56.1:4000'; // Phương Anh
+const API = 'http://192.168.56.1:4000'; // Phương Anh
 // lệnh chạy BE:  npx json-server --watch db.json --port 4000
 
 const MusicService = {

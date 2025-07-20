@@ -1,10 +1,9 @@
-// file components/FavoriteMusic.tsx
 // components/Favorite/FavoriteMusic.tsx
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FlatList,
   Image,
@@ -15,6 +14,7 @@ import {
 } from "react-native";
 import FavoriteService from '../../services/FavoriteService';
 import { useFavorites } from './FavoritesContext';
+import { useMusicPlayer } from './MusicPlayerContext';
 
 import images from "@/constants/Images";
 
@@ -25,7 +25,13 @@ const FavoriteMusic = () => {
   const [favoriteSongs, setFavoriteSongs] = useState([]);
   const navigation = useNavigation();
   const [user, setUser] = useState(null);
-  const { favoriteIds } = useFavorites();
+  const { favoriteIds } = useFavorites() as any;
+  const { playTrack } = useMusicPlayer();
+
+  // Tối ưu việc filter bằng useMemo
+  const filteredFavoriteSongs = useMemo(() => {
+    return (favoriteSongs as any[]).filter((song: any) => favoriteIds.includes(song.id));
+  }, [favoriteSongs, favoriteIds]);
 
   useEffect(() => {
     const fetchFavorites = async () => {
@@ -39,9 +45,13 @@ const FavoriteMusic = () => {
     };
 
     fetchFavorites();
-  }, []);
+  }, [favoriteIds]); // Thêm dependency để refresh khi favoriteIds thay đổi
 
   const handlePressSong = (song: any) => {
+    // Phát nhạc trong MiniPlayer
+    playTrack(song);
+    
+    // Điều hướng đến PlayScreen để xem full player
     router.push({
       pathname: '/playscreen',
       params: { song: JSON.stringify(song) },
@@ -56,9 +66,9 @@ const FavoriteMusic = () => {
           <FontAwesome name="thumbs-up" size={72} color="white" />
         </View>
         <Text style={styles.title}>Nhạc đã thích</Text>
-        <Text style={styles.userName}>{user?.name || 'Tên người dùng'}</Text>
+        <Text style={styles.userName}>{(user as any)?.name || 'Tên người dùng'}</Text>
         <Text style={styles.songCount}>
-          {favoriteSongs.length} bài hát • Hơn 17 giờ
+          {filteredFavoriteSongs.length} bài hát • Hơn 17 giờ
         </Text>
         <Text style={styles.description}>
           Nhạc mà bạn nhấn nút thích trong ứng dụng YouTube sẽ xuất hiện ở đây.
@@ -80,19 +90,19 @@ const FavoriteMusic = () => {
       </Text>
 
       <FlatList
-        data={favoriteSongs.filter(song => favoriteIds.includes(song.id))}
-        keyExtractor={(item) => item.id}
+        data={filteredFavoriteSongs}
+        keyExtractor={(item, index) => `fav-${(item as any).id}-${index}`}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => handlePressSong(item)}
             style={styles.songItem}
           >
-            <Image source={images[item.image]} style={styles.cover} />
+            <Image source={images[(item as any).image]} style={styles.cover} />
             <View style={styles.info}>
               <Text style={styles.songTitle} numberOfLines={1}>
-                {item.title}
+                {(item as any).title}
               </Text>
-              <Text style={styles.artist}>{item.artist}</Text>
+              <Text style={styles.artist}>{(item as any).artist}</Text>
             </View>
 
             <View style={styles.iconGroup}>

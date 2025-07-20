@@ -1,4 +1,4 @@
-// components/Favorite/PlayScreen.tsx
+// components/Favorite/PlayScreenSimple.tsx
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { router } from "expo-router";
@@ -29,13 +29,12 @@ const PLAY_MODES = {
 };
 
 type Props = {
-    params?: any; // Thêm ? để optional
+    params: any;
 };
 
 const PlayScreen = ({ params }: Props) => {
-    // Xử lý an toàn khi params có thể undefined
-    const song = params?.song ? (typeof params.song === 'string' ? JSON.parse(params.song) : params.song) : null;
-    const { incrementPlayCount } = useStats() as any;
+    const song = typeof params.song === 'string' ? JSON.parse(params.song) : params.song;
+    const { incrementPlayCount } = useStats();
     
     // Sử dụng MusicPlayerContext
     const { 
@@ -57,15 +56,11 @@ const PlayScreen = ({ params }: Props) => {
     const rotationRef = useRef<any>(null);
 
     useEffect(() => {
-        // Logic được cập nhật:
-        // - Nếu có song từ params và không có bài nào đang phát -> phát bài từ params
-        // - Nếu không có song từ params -> chỉ hiển thị bài đang phát hiện tại (nếu có)
-        // - Nếu cả hai đều không có -> hiển thị "Chọn một bài hát để phát"
-        if (song && !currentSong) {
+        // Nếu có bài hát từ params và khác với bài hiện tại, phát nó
+        if (song && (!currentSong || currentSong.id !== song.id)) {
             playTrack(song);
         }
-        // Không cần làm gì nếu không có song từ params - chỉ hiển thị currentSong hiện tại
-    }, [song, currentSong, playTrack]);
+    }, [song]);
 
     const spin = spinValue.interpolate({
         inputRange: [0, 1],
@@ -109,15 +104,13 @@ const PlayScreen = ({ params }: Props) => {
 
     const handleSongSelect = (selectedSong: any) => {
         playTrack(selectedSong);
-        if (incrementPlayCount) {
-            incrementPlayCount(selectedSong.title);
-        }
+        incrementPlayCount(selectedSong.title);
     };
 
     // Nếu không có bài hát hiện tại, hiển thị loading
     if (!currentSong) {
         return (
-            <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+            <View style={styles.container}>
                 <Text style={styles.headerTitle}>Chọn một bài hát để phát</Text>
             </View>
         );
@@ -199,7 +192,7 @@ const PlayScreen = ({ params }: Props) => {
                 <Text style={styles.listTitle}>Danh sách phát</Text>
                 <FlatList
                     data={songs}
-                    keyExtractor={(item, index) => `playlist-${(item as any).id}-${index}`}
+                    keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                         <TouchableOpacity
                             style={[

@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import { useMusicPlayer } from '@/components/Favorite/MusicPlayerContext';
 import images from "@/constants/Images";
 
 
@@ -77,6 +78,7 @@ const SongRow = ({ song, onPress }: { song: SongItem; onPress: (song: SongItem) 
 export default function HomeScreen() {
   const params = useLocalSearchParams();
   const user = typeof params.user === 'string' ? JSON.parse(params.user) : params.user;
+  const { playTrack } = useMusicPlayer();
 
   const [playlists, setPlaylists] = useState<PlaylistItem[]>([]);
   const [recommendedSongs, setRecommendedSongs] = useState<SongItem[]>([]);
@@ -108,6 +110,10 @@ export default function HomeScreen() {
   const navigation = useNavigation();
 
   const handleSongPress = (song: any) => {
+    // Phát nhạc trong MiniPlayer
+    playTrack(song);
+    
+    // Điều hướng đến PlayScreen để xem full player
     router.push({
       pathname: '/playscreen',
       params: { song: JSON.stringify(song) },
@@ -134,11 +140,11 @@ export default function HomeScreen() {
       <FlatList
         horizontal
         data={chunkArray(recommendedSongs, 4)}
-        keyExtractor={(_, index) => 'rec' + index}
-        renderItem={({ item }) => (
+        keyExtractor={(_, index) => 'rec-chunk-' + index}
+        renderItem={({ item, index: chunkIndex }) => (
           <View style={styles.gridWrapper}>
-            {item.map((song) => (
-              <SongCard key={song.id} item={song} onPress={handleSongPress} />
+            {item.map((song, songIndex) => (
+              <SongCard key={`rec-${chunkIndex}-${songIndex}-${song.id}`} item={song} onPress={handleSongPress} />
             ))}
           </View>
         )}
@@ -151,11 +157,11 @@ export default function HomeScreen() {
       <FlatList
         horizontal
         data={chunkArray(newReleases, 4)}
-        keyExtractor={(_, index) => 'new' + index}
-        renderItem={({ item }) => (
+        keyExtractor={(_, index) => 'new-chunk-' + index}
+        renderItem={({ item, index: chunkIndex }) => (
           <View style={styles.songRowChunk}>
-            {item.map((song) => (
-              <SongRow key={song.id} song={song} onPress={handleSongPress} />
+            {item.map((song, songIndex) => (
+              <SongRow key={`new-${chunkIndex}-${songIndex}-${song.id}`} song={song} onPress={handleSongPress} />
             ))}
           </View>
         )}
@@ -168,11 +174,11 @@ export default function HomeScreen() {
       <FlatList
         horizontal
         data={chunkArray(trendingNow, 4)}
-        keyExtractor={(_, index) => 'trend' + index}
-        renderItem={({ item }) => (
+        keyExtractor={(_, index) => 'trend-chunk-' + index}
+        renderItem={({ item, index: chunkIndex }) => (
           <View style={styles.songRowChunk}>
-            {item.map((song) => (
-              <SongRow key={song.id} song={song} onPress={handleSongPress} />
+            {item.map((song, songIndex) => (
+              <SongRow key={`trend-${chunkIndex}-${songIndex}-${song.id}`} song={song} onPress={handleSongPress} />
             ))}
           </View>
         )}
@@ -185,11 +191,11 @@ export default function HomeScreen() {
       <FlatList
         horizontal
         data={chunkArray(popularSongs, 4)}
-        keyExtractor={(_, index) => 'popular' + index}
-        renderItem={({ item }) => (
+        keyExtractor={(_, index) => 'popular-chunk-' + index}
+        renderItem={({ item, index: chunkIndex }) => (
           <View style={styles.songRowChunk}>
-            {item.map((song) => (
-              <SongRow key={song.id} song={song} onPress={handleSongPress} />
+            {item.map((song, songIndex) => (
+              <SongRow key={`popular-${chunkIndex}-${songIndex}-${song.id}`} song={song} onPress={handleSongPress} />
             ))}
           </View>
         )}
