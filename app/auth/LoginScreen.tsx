@@ -8,6 +8,7 @@ import {
   Text,
   TextInput
 } from 'react-native-paper';
+import { useAuth } from '../../contexts/AuthContext';
 import AuthService from '../../services/AuthService';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -16,6 +17,7 @@ export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(true);
+  const { login } = useAuth();
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -39,8 +41,7 @@ export default function LoginScreen() {
 
     const result = await AuthService.login(username, password);
     if (result.success) {
-      await AsyncStorage.setItem('user', JSON.stringify(result.user));
-
+      await login(result.user); // Sử dụng AuthContext login
       Alert.alert('Thành công', 'Đăng nhập thành công!');
       router.replace('../(tabs)/home');
     } else {
