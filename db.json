@@ -48,7 +48,7 @@
       "artist": "Duongg, Nâu",
       "genre": "Pop",
       "image": "3107.png",
-      "audioUrl": "music.mp3",
+      "audioUrl": "3107.mp3",
       "userId": "4929"
     },
     {
@@ -57,7 +57,7 @@
       "artist": "ERIK",
       "genre": "Ballad",
       "image": "chayvekhovoianh.png",
-      "audioUrl": "music.mp3",
+      "audioUrl": "yeudongkhoqua.mp3",
       "userId": "4929"
     },
     {
@@ -66,7 +66,7 @@
       "artist": "Dick x Tofu x PC",
       "genre": "Hip-Hop",
       "image": "ghequa.png",
-      "audioUrl": "music.mp3",
+      "audioUrl": "ghequa.mp3",
       "userId": "4929"
     },
     {
@@ -75,7 +75,7 @@
       "artist": "Tăng Duy Tân",
       "genre": "Pop",
       "image": "bentrentanglau.png",
-      "audioUrl": "music.mp3",
+      "audioUrl": "bentrentanglau.mp3",
       "userId": "7893"
     },
     {
@@ -84,7 +84,7 @@
       "artist": "Hứa Kim Tuyền x Hoàng Duyên",
       "genre": "Pop",
       "image": "saigondaulongqua.png",
-      "audioUrl": "music.mp3",
+      "audioUrl": "saigondaulongqua.mp3",
       "userId": "7893"
     },
     {
@@ -93,7 +93,7 @@
       "artist": "Rhymastic",
       "genre": "R&B",
       "image": "yeu5.png",
-      "audioUrl": "music.mp3",
+      "audioUrl": "yeu5.mp3",
       "userId": "4929"
     },
     {
@@ -102,7 +102,7 @@
       "artist": "Jack x K-ICM",
       "genre": "Pop",
       "image": "emgioi.png",
-      "audioUrl": "music.mp3",
+      "audioUrl": "emgioi.mp3",
       "userId": "4929"
     },
     {
@@ -111,7 +111,7 @@
       "artist": "Madihu ft. Low G",
       "genre": "R&B",
       "image": "coem.png",
-      "audioUrl": "music.mp3",
+      "audioUrl": "coem.mp3",
       "userId": "7893"
     },
     {
@@ -121,7 +121,7 @@
       "image": "mtp.png",
       "userId": "4929",
       "imageKey": "mtp.png",
-      "audioUrl": "music.mp3"
+      "audioUrl": "ctacuahientai.mp3"
     },
     {
       "id": "106",
@@ -130,7 +130,7 @@
       "image": "tung.png",
       "userId": "4929",
       "imageKey": "tung.png",
-      "audioUrl": "music.mp3"
+      "audioUrl": "tung.mp3"
     },
     {
       "id": "104",
@@ -139,7 +139,7 @@
       "image": "khunglong.png",
       "userId": "4929",
       "imageKey": "khunglong.png",
-      "audioUrl": "music.mp3"
+      "audioUrl": "khunglong.mp3"
     },
     {
       "id": "105",
@@ -148,16 +148,7 @@
       "image": "traochoanh.png",
       "userId": "4929",
       "imageKey": "traochoanh.png",
-      "audioUrl": "music.mp3"
-    },
-    {
-      "id": "301",
-      "title": "Sài Gòn Đau Lòng Quá",
-      "artist": "Hứa Kim Tuyền x Hoàng Duyên",
-      "image": "saigondaulongqua.png",
-      "userId": "4929",
-      "imageKey": "saigondaulongqua.png",
-      "audioUrl": "music.mp3"
+      "audioUrl": "traochoanh.mp3"
     }
   ],
   "savedAlbums": [
@@ -255,56 +246,64 @@
       "title": "3107",
       "artist": "Duongg, Nâu",
       "image": "3107.png",
-      "duration": "4:12"
+      "duration": "4:12",
+      "audioUrl": "3107.mp3"
     },
     {
       "id": "2",
       "title": "Chạy Về Khóc Với Anh",
       "artist": "ERIK",
       "image": "chayvekhovoianh.png",
-      "duration": "3:55"
+      "duration": "3:55",
+      "audioUrl": "yeudongkhoqua.mp3"
     },
     {
       "id": "3",
       "title": "Ghé Qua",
       "artist": "Dick x Tofu x PC",
       "image": "ghequa.png",
-      "duration": "2:50"
+      "duration": "2:50",
+      "audioUrl": "ghequa.mp3"
     },
     {
       "id": "4",
       "title": "Bên Trên Tầng Lầu",
       "artist": "Tăng Duy Tân",
       "image": "bentrentanglau.png",
-      "duration": "3:10"
+      "duration": "3:10",
+      "audioUrl": "bentrentanglau.mp3"
     },
     {
       "id": "5",
       "title": "Em Gì Ơi",
       "artist": "Jack x K-ICM",
       "image": "emgioi.png",
-      "duration": "3:40"
+      "duration": "3:40",
+      "audioUrl": "emgioi.mp3"
     },
     {
       "id": "6",
       "title": "Thích Em Hơi Nhiều",
       "artist": "Wren Evans",
       "image": "thichemhoinhieu.png",
-      "duration": "3:03"
+      "duration": "3:03",
+      "audioUrl": "thichemhoinhieu.mp3"
     },
     {
       "id": "7",
       "title": "Lửng Lơ",
       "artist": "Masew, BRay",
       "image": "lunglo.png",
-      "duration": "3:17"
+      "duration": "3:17",
+      "audioUrl": "lunglo.mp3"
     },
     {
       "id": "8",
       "title": "Có Em",
       "artist": "Madihu ft. Low G",
       "image": "coem.png",
-      "duration": "3:21"
+      "duration": "3:21",
+      "audioUrl": "coem.mp3"
     }
   ],
   "popularSongs": [
@@ -312,49 +311,57 @@
       "id": "301",
       "title": "Sài Gòn Đau Lòng Quá",
       "artist": "Hứa Kim Tuyền x Hoàng Duyên",
-      "image": "saigondaulongqua.png"
+      "image": "saigondaulongqua.png",
+      "audioUrl": "saigondaulongqua.mp3"
     },
     {
       "id": "302",
       "title": "Tình Đắng Như Ly Cà Phê",
       "artist": "Ngọc Dolil",
-      "image": "cafe.png"
+      "image": "cafe.png",
+      "audioUrl": "cafe.mp3"
     },
     {
       "id": "303",
       "title": "Chìm Sâu",
       "artist": "RPT MCK",
-      "image": "chimsau.png"
+      "image": "chimsau.png",
+      "audioUrl": "chimsau.mp3"
     },
     {
       "id": "304",
       "title": "Truy Lùng",
       "artist": "Andree Right Hand",
-      "image": "truylung.png"
+      "image": "truylung.png",
+      "audioUrl": "truylung.mp3"
     },
     {
       "id": "305",
       "title": "Yêu 5",
       "artist": "Rhymastic",
-      "image": "yeu5.png"
+      "image": "yeu5.png",
+      "audioUrl": "yeu5.mp3"
     },
     {
       "id": "306",
       "title": "Anh Đã Lạc Vào",
       "artist": "Green x Đại Mèo Remix",
-      "image": "anhdalacvao.png"
+      "image": "anhdalacvao.png",
+      "audioUrl": "anhdalacvao.mp3"
     },
     {
       "id": "307",
       "title": "Simple Love",
       "artist": "Obito x Seachains",
-      "image": "simplelove.png"
+      "image": "simplelove.png",
+      "audioUrl": "simplelove.mp3"
     },
     {
       "id": "308",
       "title": "Tết Đong Đầy",
       "artist": "Kay Trần x OnlyC",
-      "image": "tet.png"
+      "image": "tet.png",
+      "audioUrl": "tet.mp3"
     }
   ],
   "newReleases": [
@@ -362,49 +369,57 @@
       "id": "101",
       "title": "Chúng Ta Của Hiện Tại",
       "artist": "Sơn Tùng M-TP",
-      "image": "mtp.png"
+      "image": "mtp.png",
+      "audioUrl": "ctacuahientai.mp3"
     },
     {
       "id": "102",
       "title": "Đau Ở Đây Này",
       "artist": "Nal",
-      "image": "nal.png"
+      "image": "nal.png",
+      "audioUrl": "dauodaynay.mp3"
     },
     {
       "id": "103",
       "title": "Đưa Em Về Nhà",
       "artist": "GREY D",
-      "image": "grey.png"
+      "image": "grey.png",
+      "audioUrl": "duaemvenha.mp3"
     },
     {
       "id": "104",
       "title": "Tình Yêu Khủng Long",
       "artist": "Fay x Quang Đăng Trần",
-      "image": "khunglong.png"
+      "image": "khunglong.png",
+      "audioUrl": "khunglong.mp3"
     },
     {
       "id": "105",
       "title": "Hãy Trao Cho Anh",
       "artist": "Sơn Tùng M-TP ft. Snoop Dogg",
-      "image": "traochoanh.png"
+      "image": "traochoanh.png",
+      "audioUrl": "traochoanh.mp3"
     },
     {
       "id": "106",
       "title": "Ai Chung Tình Được Mãi",
       "artist": "Đinh Tùng Huy",
-      "image": "tung.png"
+      "image": "tung.png",
+      "audioUrl": "tung.mp3"
     },
     {
       "id": "107",
       "title": "Tự Tình 2",
       "artist": "Trung Quân Idol",
-      "image": "tutinh.png"
+      "image": "tutinh.png",
+      "audioUrl": "tutinh2.mp3"
     },
     {
       "id": "108",
       "title": "Chỉ Một Đêm Nữa Thôi",
       "artist": "Minh Huy",
-      "image": "motdem.png"
+      "image": "motdem.png",
+      "audioUrl": "motdem.mp3"
     }
   ],
   "trendingNow": [
@@ -412,49 +427,57 @@
       "id": "201",
       "title": "See Tình",
       "artist": "Hoàng Thùy Linh",
-      "image": "seetinh.png"
+      "image": "seetinh.png",
+      "audioUrl": "seetinh.mp3"
     },
     {
       "id": "202",
       "title": "Em Là",
       "artist": "MONSTAR",
-      "image": "emla.png"
+      "image": "emla.png",
+      "audioUrl": "emla.mp3"
     },
     {
       "id": "203",
       "title": "Phía Sau Em",
       "artist": "Kay Trần x Binz",
-      "image": "phiasau.png"
+      "image": "phiasau.png",
+      "audioUrl": "phiasau.mp3"
     },
     {
       "id": "204",
       "title": "Lạ Lùng",
       "artist": "Vũ.",
-      "image": "lalung.png"
+      "image": "lalung.png",
+      "audioUrl": "lalung.mp3"
     },
     {
       "id": "205",
       "title": "Mượn Rượu Tỏ Tình",
       "artist": "BigDaddy x Emily",
-      "image": "ruou.png"
+      "image": "ruou.png",
+      "audioUrl": "ruou.mp3"
     },
     {
       "id": "206",
       "title": "Nếu Lúc Đó",
       "artist": "tlinh ft. 2pillz",
-      "image": "neulucdo.png"
+      "image": "neulucdo.png",
+      "audioUrl": "neulucdo.mp3"
     },
     {
       "id": "207",
       "title": "Có Chắc Yêu Là Đây",
       "artist": "Sơn Tùng M-TP",
-      "image": "yeuladay.png"
+      "image": "yeuladay.png",
+      "audioUrl": "yeuladay.mp3"
     },
     {
       "id": "208",
       "title": "Tình Yêu Màu Hồng",
       "artist": "Huyền Tâm Môn",
-      "image": "hong.png"
+      "image": "hong.png",
+      "audioUrl": "hong.mp3"
     }
   ]
 }

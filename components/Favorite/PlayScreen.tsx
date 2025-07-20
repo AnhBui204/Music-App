@@ -22,6 +22,42 @@ import MusicService from "@/services/MusicService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFavorites } from './FavoritesContext';
 
+const audioFiles: { [key: string]: any } = {
+    '3107.mp3': require('../../assets/audio/3107.mp3'),
+    'yeudongkhoqua.mp3': require('../../assets/audio/yeudongkhoqua.mp3'),
+    'ghequa.mp3': require('../../assets/audio/ghequa.mp3'),
+    'bentrentanglau.mp3': require('../../assets/audio/bentrentanglau.mp3'),
+    'saigondaulongqua.mp3': require('../../assets/audio/saigondaulongqua.mp3'),
+    'yeu5.mp3': require('../../assets/audio/yeu5.mp3'),
+    'emgioi.mp3': require('../../assets/audio/emgioi.mp3'),
+    'coem.mp3': require('../../assets/audio/coem.mp3'),
+    'ctacuahientai.mp3': require('../../assets/audio/ctacuahientai.mp3'),
+    'tung.mp3': require('../../assets/audio/tung.mp3'),
+    'khunglong.mp3': require('../../assets/audio/khunglong.mp3'),
+    'traochoanh.mp3': require('../../assets/audio/traochoanh.mp3'),
+    'thichemhoinhieu.mp3': require('../../assets/audio/thichemhoinhieu.mp3'),
+    'lunglo.mp3': require('../../assets/audio/lunglo.mp3'),
+    'cafe.mp3': require('../../assets/audio/cafe.mp3'),
+    'chimsau.mp3': require('../../assets/audio/chimsau.mp3'),
+    'truylung.mp3': require('../../assets/audio/truylung.mp3'),
+    'anhdalacvao.mp3': require('../../assets/audio/anhdalacvao.mp3'),
+    'simplelove.mp3': require('../../assets/audio/simplelove.mp3'),
+    'tet.mp3': require('../../assets/audio/tet.mp3'),
+    'dauodaynay.mp3': require('../../assets/audio/dauodaynay.mp3'),
+    'duaemvenha.mp3': require('../../assets/audio/duaemvenha.mp3'),
+    'tutinh2.mp3': require('../../assets/audio/tutinh2.mp3'),
+    'motdem.mp3': require('../../assets/audio/motdem.mp3'),
+    'seetinh.mp3': require('../../assets/audio/seetinh.mp3'),
+    'emla.mp3': require('../../assets/audio/emla.mp3'),
+    'phiasau.mp3': require('../../assets/audio/phiasau.mp3'),
+    'lalung.mp3': require('../../assets/audio/lalung.mp3'),
+    'ruou.mp3': require('../../assets/audio/ruou.mp3'),
+    'neulucdo.mp3': require('../../assets/audio/neulucdo.mp3'),
+    'yeuladay.mp3': require('../../assets/audio/yeuladay.mp3'),
+    'hong.mp3': require('../../assets/audio/hong.mp3'),
+};
+
+
 const IMAGES = {
     cdDisk: require("../../assets/images/cd_disk.png"),
 };
@@ -124,33 +160,46 @@ const PlayScreen = ({ params }: Props) => {
 
 
 
-    const loadAudio = async () => {
-        if (soundRef.current) {
-            await soundRef.current.unloadAsync();
-        }
+    const loadAudio = async (songToLoad) => {
+        try {
+            if (soundRef.current) {
+                await soundRef.current.stopAsync();
+                await soundRef.current.unloadAsync();
+                soundRef.current.setOnPlaybackStatusUpdate(null);
+                soundRef.current = null;
+            }
 
-        const { sound, status } = await Audio.Sound.createAsync(
-            require("../../assets/music.mp3"),
-            { shouldPlay: true },
-            onPlaybackStatusUpdate
-        );
-        soundRef.current = sound;
-        setDuration(status.durationMillis);
-        setIsPlaying(true);
+            const file = songToLoad.audioUrl;
+            const soundAsset = audioFiles[file];
+            const { sound, status } = await Audio.Sound.createAsync(
+                soundAsset,
+                { shouldPlay: true },
+                onPlaybackStatusUpdate
+            );
+
+            soundRef.current = sound;
+            setDuration(status.durationMillis);
+            setIsPlaying(true);
+        } catch (error) {
+            console.error("Lỗi load nhạc:", error);
+        }
     };
 
 
     const handleSongSelect = async (newSong) => {
         if (soundRef.current) {
+            await soundRef.current.stopAsync();
             await soundRef.current.unloadAsync();
+            soundRef.current.setOnPlaybackStatusUpdate(null);
             soundRef.current = null;
         }
 
         setCurrentSong(newSong);
         setPosition(0);
         incrementPlayCount(newSong.title);
-        await loadAudio();
+        await loadAudio(newSong); // truyền trực tiếp newSong
     };
+
 
     const onPlaybackStatusUpdate = status => {
         if (status.isLoaded) {
