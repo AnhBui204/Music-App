@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // const API = 'http://10.13.2.126:4000';// đây là địa chỉ IP của FPT     
-const API = 'http://192.168.106.210:4000'; //đây là địa chỉ IP của Anh Bùi  
+const API = 'http://192.168.1.2:4000'; //đây là địa chỉ IP của Anh Bùi  
 
 // const API = 'http://192.168.56.1:4000'; // Phương Anh
 // lệnh chạy BE:  npx json-server --watch db.json --port 4000
@@ -12,6 +12,10 @@ const MusicService = {
   getNewReleases: () => axios.get(`${API}/newReleases`),
   getTrending: () => axios.get(`${API}/trendingNow`),
   getPopularSongs: () => axios.get(`${API}/popularSongs`),
+  createAlbum: (album: any) => axios.post(`${API}/albums`, album),
+  getAlbum:() => axios.get(`${API}/albums`),
+deleteAlbum: (albumId: string) => axios.delete(`${API}/albums/${albumId}`),
+
   getAllSongs: async () => {
     const [recommended, newReleases, trending, popular] = await Promise.all([
       axios.get(`${API}/recommendedSongs`),

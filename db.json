@@ -479,5 +479,38 @@
       "image": "hong.png",
       "audioUrl": "hong.mp3"
     }
+  ],
+  "albums": [
+    {
+      "id": "1753032277047",
+      "title": "chill chill",
+      "createdAt": "2025-07-20T17:24:37.047Z",
+      "userId": "62e7",
+      "songs": [
+        {
+          "id": "1",
+          "title": "3107",
+          "artist": "Duongg, Nâu",
+          "image": "3107.png",
+          "duration": "4:12",
+          "audioUrl": "3107.mp3"
+        },
+        {
+          "id": "3",
+          "title": "Ghé Qua",
+          "artist": "Dick x Tofu x PC",
+          "image": "ghequa.png",
+          "duration": "2:50",
+          "audioUrl": "ghequa.mp3"
+        },
+        {
+          "id": "101",
+          "title": "Chúng Ta Của Hiện Tại",
+          "artist": "Sơn Tùng M-TP",
+          "image": "mtp.png",
+          "audioUrl": "ctacuahientai.mp3"
+        }
+      ]
+    }
   ]
 }

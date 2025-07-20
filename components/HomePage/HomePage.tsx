@@ -115,10 +115,16 @@ export default function HomeScreen() {
   };
 
   return (
+    
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Header openDrawer={() => navigation.dispatch(DrawerActions.openDrawer())} />
       </View>
+<TouchableOpacity
+  style={styles.createAlbumButton}
+  onPress={() => router.push('/createAlbum')}>
+  <Text style={styles.createAlbumText}>➕ Tạo Album</Text>
+</TouchableOpacity>
 
       <SectionTitle title="🔥 Playlist Gợi Ý" />
       <FlatList
@@ -310,4 +316,17 @@ const styles = StyleSheet.create({
     paddingRight: 40, 
     marginBottom: 16,
   },
+  createAlbumButton: {
+  backgroundColor: '#1DB954',
+  padding: 10,
+  borderRadius: 10,
+  alignItems: 'center',
+  marginBottom: 12,
+},
+createAlbumText: {
+  color: '#fff',
+  fontWeight: 'bold',
+  fontSize: 16,
+},
+
 });
