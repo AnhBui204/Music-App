@@ -234,20 +234,13 @@
   ],
   "recommendedSongs": [
     {
-      "id": "1",
-      "title": "3107",
-      "artist": "Duongg, Nâu",
-      "image": "3107.png",
-      "duration": "4:12",
-      "audioUrl": "3107.mp3"
-    },
-    {
-      "id": "2",
       "title": "Chạy Về Khóc Với Anh",
       "artist": "ERIK",
       "image": "chayvekhovoianh.png",
+      "audioUrl": "yeudongkhoqua.mp3",
       "duration": "3:55",
-      "audioUrl": "yeudongkhoqua.mp3"
+      "genre": "",
+      "id": "2"
     },
     {
       "id": "3",
@@ -296,23 +289,27 @@
       "image": "coem.png",
       "duration": "3:21",
       "audioUrl": "coem.mp3"
+    },
+    {
+      "id": "b7ed",
+      "title": "12312",
+      "artist": "312312",
+      "image": "ngu.jpq",
+      "audioUrl": "31.mp3",
+      "duration": "21321",
+      "genre": "12312"
+    },
+    {
+      "id": "e9b1",
+      "title": "Chim Sáu",
+      "artist": "Various Artists",
+      "image": "chimsau.png",
+      "audioUrl": "chimsau.mp3",
+      "duration": "4:44",
+      "genre": "Folk"
     }
   ],
   "popularSongs": [
-    {
-      "id": "301",
-      "title": "Sài Gòn Đau Lòng Quá",
-      "artist": "Hứa Kim Tuyền x Hoàng Duyên",
-      "image": "saigondaulongqua.png",
-      "audioUrl": "saigondaulongqua.mp3"
-    },
-    {
-      "id": "302",
-      "title": "Tình Đắng Như Ly Cà Phê",
-      "artist": "Ngọc Dolil",
-      "image": "cafe.png",
-      "audioUrl": "cafe.mp3"
-    },
     {
       "id": "303",
       "title": "Chìm Sâu",
@@ -321,32 +318,11 @@
       "audioUrl": "chimsau.mp3"
     },
     {
-      "id": "304",
-      "title": "Truy Lùng",
-      "artist": "Andree Right Hand",
-      "image": "truylung.png",
-      "audioUrl": "truylung.mp3"
-    },
-    {
-      "id": "305",
-      "title": "Yêu 5",
-      "artist": "Rhymastic",
-      "image": "yeu5.png",
-      "audioUrl": "yeu5.mp3"
-    },
-    {
       "id": "306",
       "title": "Anh Đã Lạc Vào",
       "artist": "Green x Đại Mèo Remix",
       "image": "anhdalacvao.png",
       "audioUrl": "anhdalacvao.mp3"
-    },
-    {
-      "id": "307",
-      "title": "Simple Love",
-      "artist": "Obito x Seachains",
-      "image": "simplelove.png",
-      "audioUrl": "simplelove.mp3"
     },
     {
       "id": "308",
