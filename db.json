@@ -471,5 +471,86 @@
       "image": "hong.png",
       "audioUrl": "hong.mp3"
     }
+  ],
+  "albums": [
+    {
+      "id": "1753032277047",
+      "title": "chill chill",
+      "createdAt": "2025-07-20T17:24:37.047Z",
+      "userId": "62e7",
+      "songs": [
+        {
+          "id": "1",
+          "title": "3107",
+          "artist": "Duongg, Nâu",
+          "image": "3107.png",
+          "duration": "4:12",
+          "audioUrl": "3107.mp3"
+        },
+        {
+          "id": "3",
+          "title": "Ghé Qua",
+          "artist": "Dick x Tofu x PC",
+          "image": "ghequa.png",
+          "duration": "2:50",
+          "audioUrl": "ghequa.mp3"
+        },
+        {
+          "id": "101",
+          "title": "Chúng Ta Của Hiện Tại",
+          "artist": "Sơn Tùng M-TP",
+          "image": "mtp.png",
+          "audioUrl": "ctacuahientai.mp3"
+        }
+      ]
+    },
+    {
+      "id": "1753079655863",
+      "title": "Chill",
+      "createdAt": "2025-07-21T06:34:15.863Z",
+      "userId": "4929",
+      "songs": [
+        {
+          "id": "1",
+          "title": "3107",
+          "artist": "Duongg, Nâu",
+          "image": "3107.png",
+          "duration": "4:12",
+          "audioUrl": "3107.mp3"
+        },
+        {
+          "id": "2",
+          "title": "Chạy Về Khóc Với Anh",
+          "artist": "ERIK",
+          "image": "chayvekhovoianh.png",
+          "duration": "3:55",
+          "audioUrl": "yeudongkhoqua.mp3"
+        },
+        {
+          "id": "3",
+          "title": "Ghé Qua",
+          "artist": "Dick x Tofu x PC",
+          "image": "ghequa.png",
+          "duration": "2:50",
+          "audioUrl": "ghequa.mp3"
+        },
+        {
+          "id": "4",
+          "title": "Bên Trên Tầng Lầu",
+          "artist": "Tăng Duy Tân",
+          "image": "bentrentanglau.png",
+          "duration": "3:10",
+          "audioUrl": "bentrentanglau.mp3"
+        },
+        {
+          "id": "5",
+          "title": "Em Gì Ơi",
+          "artist": "Jack x K-ICM",
+          "image": "emgioi.png",
+          "duration": "3:40",
+          "audioUrl": "emgioi.mp3"
+        }
+      ]
+    }
   ]
 }

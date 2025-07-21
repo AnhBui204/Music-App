@@ -12,6 +12,10 @@ const MusicService = {
   getNewReleases: () => axios.get(`${API}/newReleases`),
   getTrending: () => axios.get(`${API}/trendingNow`),
   getPopularSongs: () => axios.get(`${API}/popularSongs`),
+  createAlbum: (album: any) => axios.post(`${API}/albums`, album),
+  getAlbum:() => axios.get(`${API}/albums`),
+deleteAlbum: (albumId: string) => axios.delete(`${API}/albums/${albumId}`),
+
   getAllSongs: async () => {
     const [recommended, newReleases, trending, popular] = await Promise.all([
       axios.get(`${API}/recommendedSongs`),
