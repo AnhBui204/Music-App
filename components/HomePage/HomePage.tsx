@@ -108,11 +108,20 @@ export default function HomeScreen() {
   const navigation = useNavigation();
 
   const handleSongPress = (song: any) => {
+    const simpleSong = {
+      id: song.id,
+      title: song.title,
+      artist: song.artist,
+      audioUrl: song.audioUrl,
+      image: song.image,
+    };
+
     router.push({
       pathname: '/playscreen',
-      params: { song: JSON.stringify(song) },
+      params: { song: JSON.stringify(simpleSong) },
     });
   };
+
 
   return (
     <ScrollView style={styles.container}>
@@ -307,7 +316,7 @@ const styles = StyleSheet.create({
   },
   songRowChunk: {
     width,
-    paddingRight: 40, 
+    paddingRight: 40,
     marginBottom: 16,
   },
 });

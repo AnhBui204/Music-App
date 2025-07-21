@@ -28,7 +28,7 @@ export const FavoritesProvider = ({ children }) => {
 
   const removeFavorite = async (songId: string, userId: string) => {
     try {
-      await FavoriteService.removeFromFavorites(songId, userId);
+      await FavoriteService.removeFavorite(songId);
       setFavoriteIds((prev) => prev.filter((id) => id !== songId));
       Alert.alert("Thành công", "Đã xóa khỏi mục yêu thích!");
     } catch (error) {

@@ -4,7 +4,6 @@ import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import FavoriteMusic from './FavoriteMusic';
-import PlayScreen from './PlayScreen';
 import SavedAlbums from './SavedAlbums';
 import ListeningStats from './Statistics';
 // Tạo custom drawer với avatar + tên
@@ -66,11 +65,6 @@ const MusicDrawer = () => {
         name="SavedAlbums"
         component={SavedAlbums}
         options={{ drawerLabel: ' Saved Albums' }}
-      />
-      <Drawer.Screen
-        name="PlayScreen"
-        component={PlayScreen}
-        options={{ drawerLabel: ' Now Playing' }}
       />
       <Drawer.Screen
         name="Statistics"

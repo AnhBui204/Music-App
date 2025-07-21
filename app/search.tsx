@@ -48,6 +48,21 @@ const SearchScreen: React.FC<Props> = ({ navigateToPlayScreen }) => {
     router.replace("/(tabs)/home");
   };
 
+  const handleSongPress = (song: any) => {
+    const simpleSong = {
+      id: song.id,
+      title: song.title,
+      artist: song.artist,
+      audioUrl: song.audioUrl,
+      image: song.image,
+    };
+
+    router.push({
+      pathname: '/playscreen',
+      params: { song: JSON.stringify(simpleSong) },
+    });
+  };
+
   return (
     <View style={styles.container}>
       {/* Search Input Row */}
@@ -74,8 +89,7 @@ const SearchScreen: React.FC<Props> = ({ navigateToPlayScreen }) => {
         data={results}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigateToPlayScreen(item)}
-            style={styles.item}>
+          <TouchableOpacity key={item.id} onPress={() => handleSongPress(item)} style={styles.item}>
             <View style={styles.itemContent}>
               <Image source={images[item.image]} style={styles.image} />
               <View style={styles.textWrapper}>

@@ -3,7 +3,7 @@ import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
 import { Audio } from "expo-av";
 import { router } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
     Animated,
     Easing,
@@ -14,7 +14,6 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import FavoriteService from "../../services/FavoriteService";
 import { useStats } from "./StatsContext"; // Assuming you have a StatsContext for play count
 
 import images from "@/constants/Images";
@@ -82,7 +81,7 @@ const PlayScreen = ({ params }: Props) => {
     const [position, setPosition] = useState(0);
     const [duration, setDuration] = useState(0);
     const [mode, setMode] = useState(PLAY_MODES.REPEAT_ONE);
-    const [isLiked, setIsLiked] = useState(false);
+    const isLiked = useMemo(() => favoriteIds.includes(song.id), [favoriteIds, song]);
     const [currentSong, setCurrentSong] = useState(song);
     const [songs, setSongs] = useState([]);
 
@@ -111,27 +110,6 @@ const PlayScreen = ({ params }: Props) => {
         getAllSongs();
 
     }, []);
-
-
-
-
-    useEffect(() => {
-        if (!user || !song) return;
-
-        const checkIfLiked = async () => {
-            try {
-                const res = await FavoriteService.getFavorites();
-                const liked = res.data.some(
-                    (fav: any) => fav.id === song.id && fav.userId === user.id
-                );
-                setIsLiked(liked);
-            } catch (err) {
-                console.error("Lỗi kiểm tra favorite:", err);
-            }
-        };
-
-        checkIfLiked();
-    }, [user, song]);
 
     const spin = spinValue.interpolate({
         inputRange: [0, 1],

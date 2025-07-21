@@ -88,15 +88,6 @@
       "userId": "7893"
     },
     {
-      "id": "6",
-      "title": "Yêu 5",
-      "artist": "Rhymastic",
-      "genre": "R&B",
-      "image": "yeu5.png",
-      "audioUrl": "yeu5.mp3",
-      "userId": "4929"
-    },
-    {
       "id": "7",
       "title": "Em Gì Ơi",
       "artist": "Jack x K-ICM",
@@ -149,6 +140,34 @@
       "userId": "4929",
       "imageKey": "traochoanh.png",
       "audioUrl": "traochoanh.mp3"
+    },
+    {
+      "id": "103",
+      "title": "Đưa Em Về Nhà",
+      "artist": "GREY D",
+      "audioUrl": "duaemvenha.mp3",
+      "image": "grey.png",
+      "userId": "4929",
+      "imageKey": "grey.png"
+    },
+    {
+      "id": "201",
+      "title": "See Tình",
+      "artist": "Hoàng Thùy Linh",
+      "audioUrl": "seetinh.mp3",
+      "image": "seetinh.png",
+      "userId": "4929",
+      "imageKey": "seetinh.png"
+    },
+    {
+      "id": "4",
+      "title": "Bên Trên Tầng Lầu",
+      "artist": "Tăng Duy Tân",
+      "image": "bentrentanglau.png",
+      "duration": "3:10",
+      "audioUrl": "bentrentanglau.mp3",
+      "userId": "4929",
+      "imageKey": "bentrentanglau.png"
     }
   ],
   "savedAlbums": [

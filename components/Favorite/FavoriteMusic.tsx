@@ -2,7 +2,6 @@
 // components/Favorite/FavoriteMusic.tsx
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -23,23 +22,31 @@ const router = useRouter();
 
 const FavoriteMusic = () => {
   const [favoriteSongs, setFavoriteSongs] = useState([]);
-  const navigation = useNavigation();
   const [user, setUser] = useState(null);
-  const { favoriteIds } = useFavorites();
+  const { favoriteIds, setFavoriteIds } = useFavorites();
 
   useEffect(() => {
     const fetchFavorites = async () => {
-      const storedUser = await AsyncStorage.getItem('user');
-      const userStored = storedUser ? JSON.parse(storedUser) : null;
-      if (!userStored) return;
+      try {
+        const storedUser = await AsyncStorage.getItem('user');
+        const userStored = storedUser ? JSON.parse(storedUser) : null;
+        if (!userStored) return;
 
-      const songs = await FavoriteService.getFavoritesByUser(userStored.id);
-      setFavoriteSongs(songs);
-      setUser(userStored);
+        const songs = await FavoriteService.getFavoritesByUser(userStored.id);
+        setFavoriteSongs(songs);
+        setUser(userStored);
+
+        const ids = songs.map(song => song.id);
+        setFavoriteIds(ids); // từ useFavorites context
+      } catch (error) {
+        console.error("Lỗi fetchFavorites:", error);
+      }
     };
 
     fetchFavorites();
   }, []);
+
+
 
   const handlePressSong = (song: any) => {
     router.push({
