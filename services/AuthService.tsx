@@ -1,8 +1,7 @@
 import axios from 'axios';
 
 // const API_URL = 'http://10.13.2.126:4000/users'; //đây là địa chỉ IP của FPT  
-// const API_URL = 'http://192.168.106.210:4000/users'; //đây là địa chỉ IP của Anh Bùi  
-const API_URL = 'http://172.16.0.206:4000/users';
+const API_URL = 'http://192.168.106.210:4000/users'; //đây là địa chỉ IP của Anh Bùi  
 
 // const API_URL = 'http://192.168.56.1:4000/users'; // IP của Phương Anh 
 

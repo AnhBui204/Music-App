@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = 'http://172.16.0.206:4000';
+const API = 'http://192.168.106.210:4000';
 
 export interface Song {
   id?: string;
