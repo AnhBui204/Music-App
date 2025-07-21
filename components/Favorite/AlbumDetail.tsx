@@ -1,5 +1,5 @@
 // components/AlbumDetail.tsx
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import Slider from '@react-native-community/slider';
 import { Audio } from "expo-av";
 import React, { useEffect, useState } from "react";
@@ -53,44 +53,40 @@ const audioFiles: { [key: string]: any } = {
     'hong.mp3': require('../../assets/audio/hong.mp3'),
 };
 const songImages: { [key: string]: any } = {
-  "3107": require("../assets/images/3107.png"),
-  "chayvekhovoianh": require("../assets/images/chayvekhovoianh.png"),
-  "ghequa": require("../assets/images/ghequa.png"),
-  "bentrentanglau": require("../assets/images/bentrentanglau.png"),
-  "saigondaulongqua": require("../assets/images/saigondaulongqua.png"),
-  "yeu5": require("../assets/images/yeu5.png"),
-  "emgioi": require("../assets/images/emgioi.png"),
-  "coem": require("../assets/images/coem.png"),
-  "mtp": require("../assets/images/mtp.png"),
-  "tung": require("../assets/images/tung.png"),
-  "khunglong": require("../assets/images/khunglong.png"),
-  "traochoanh": require("../assets/images/traochoanh.png"),
-  "thichemhoinhieu": require("../assets/images/thichemhoinhieu.png"),
-  "lunglo": require("../assets/images/lunglo.png"),
-  "cafe": require("../assets/images/cafe.png"),
-  "chimsau": require("../assets/images/chimsau.png"),
-  "truylung": require("../assets/images/truylung.png"),
-  "anhdalacvao": require("../assets/images/anhdalacvao.png"),
-  "simplelove": require("../assets/images/simplelove.png"),
-  "tet": require("../assets/images/tet.png"),
-  "nal": require("../assets/images/nal.png"),
-  "grey": require("../assets/images/grey.png"),
-  "tutinh": require("../assets/images/tutinh.png"),
-  "motdem": require("../assets/images/motdem.png"),
-  "seetinh": require("../assets/images/seetinh.png"),
-  "emla": require("../assets/images/emla.png"),
-  "phiasau": require("../assets/images/phiasau.png"),
-  "lalung": require("../assets/images/lalung.png"),
-  "ruou": require("../assets/images/ruou.png"),
-  "neulucdo": require("../assets/images/neulucdo.png"),
-  "yeuladay": require("../assets/images/yeuladay.png"),
-  "hong": require("../assets/images/hong.png"),
-  "vietnam-top": require("../assets/images/vietnam-top.png"),
-  "gym-playlist": require("../assets/images/gym-playlist.jpg"),
-  "lofi-playlist": require("../assets/images/lofi-playlist.png"),
-  "ballad": require("../assets/images/ballad.png"),
-  "remix": require("../assets/images/remix.png"),
-  "cover": require("../assets/images/cover.png"),
+  '3107.png': require('../../assets/images/3107.png'),
+  "chayvekhovoianh.png": require("../../assets/images/chayvekhovoianh.png"),
+  "ghequa.png": require("../../assets/images/ghequa.png"),
+  "bentrentanglau.png": require("../../assets/images/bentrentanglau.png"),
+  "saigondaulongqua.png": require("../../assets/images/saigondaulongqua.png"),
+  "yeu5.png": require("../../assets/images/yeu5.png"),
+  "emgioi.png": require("../../assets/images/emgioi.png"),
+  "coem.png": require("../../assets/images/coem.png"),
+  "mtp.png": require("../../assets/images/mtp.png"),
+  "tung.png": require("../../assets/images/tung.png"),
+  "khunglong.png": require("../../assets/images/khunglong.png"),
+  "traochoanh.png": require("../../assets/images/traochoanh.png"),
+  "thichemhoinhieu.png": require("../../assets/images/thichemhoinhieu.png"),
+  "lunglo.png": require("../../assets/images/lunglo.png"),
+  "cafe.png": require("../../assets/images/cafe.png"),
+  "chimsau.png": require("../../assets/images/chimsau.png"),
+  "truylung.png": require("../../assets/images/truylung.png"),
+  "anhdalacvao.png": require("../../assets/images/anhdalacvao.png"),
+  "simplelove.png": require("../../assets/images/simplelove.png"),
+  "tet.png": require("../../assets/images/tet.png"),
+  "nal.png": require("../../assets/images/nal.png"),
+  "grey.png": require("../../assets/images/grey.png"),
+  "tutinh.png": require("../../assets/images/tutinh.png"),
+  "motdem.png": require("../../assets/images/motdem.png"),
+  "seetinh.png": require("../../assets/images/seetinh.png"),
+  "emla.png": require("../../assets/images/emla.png"),
+  "phiasau.png": require("../../assets/images/phiasau.png"),
+  "lalung.png": require("../../assets/images/lalung.png"),
+  "ruou.png": require("../../assets/images/ruou.png"),
+  "neulucdo.png": require("../../assets/images/neulucdo.png"),
+  "yeuladay.png": require("../../assets/images/yeuladay.png"),
+  "hong.png": require("../../assets/images/hong.png"),
+  "ballad.png": require("../../assets/images/ballad.png"),
+  "remix.png": require("../../assets/images/remix.png"),
   'default': require('../../assets/images/cover.png'),
 };
 interface Props {
@@ -205,12 +201,6 @@ const renderItem = ({ item }: { item: Song }) => (
         <Text style={styles.songArtist}>{item.artist}</Text>
       </View>
       <View style={styles.iconGroup}>
-        <TouchableOpacity>
-          <FontAwesome name="thumbs-up" size={22} color="#1DB954" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <FontAwesome name="thumbs-down" size={22} color="#888" />
-        </TouchableOpacity>
         <TouchableOpacity onPress={() => {
           setSelectedOptionsId(prev => prev === item.id ? null : item.id);
         }}>
@@ -304,24 +294,29 @@ const renderItem = ({ item }: { item: Song }) => (
 
   </View>
 )}
-<Text style={{ color: '#ccc', fontSize: 12 }}>
-  {Math.floor(position / 60000)}:{String(Math.floor(position / 1000) % 60).padStart(2, '0')} / {Math.floor(duration / 60000)}:{String(Math.floor(duration / 1000) % 60).padStart(2, '0')}
-</Text>
+{sound && isPlaying && (
+  <>
+    <Text style={{ color: '#ccc', fontSize: 12 }}>
+      {Math.floor(position / 60000)}:{String(Math.floor(position / 1000) % 60).padStart(2, '0')} / {Math.floor(duration / 60000)}:{String(Math.floor(duration / 1000) % 60).padStart(2, '0')}
+    </Text>
 
-<Slider
-  style={styles.slider}
-  minimumValue={0}
-  maximumValue={duration}
-  value={position}
-  minimumTrackTintColor="#1DB954"
-  maximumTrackTintColor="#555"
-  thumbTintColor="#1DB954"
-  onSlidingComplete={async (value) => {
-    if (sound) {
-      await sound.setPositionAsync(value);
-    }
-  }}
-/>
+    <Slider
+      style={styles.slider}
+      minimumValue={0}
+      maximumValue={duration}
+      value={position}
+      minimumTrackTintColor="#1DB954"
+      maximumTrackTintColor="#555"
+      thumbTintColor="#1DB954"
+      onSlidingComplete={async (value) => {
+        if (sound) {
+          await sound.setPositionAsync(value);
+        }
+      }}
+    />
+  </>
+)}
+
 
     </View>
   );
