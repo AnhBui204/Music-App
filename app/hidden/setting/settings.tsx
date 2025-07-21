@@ -1,29 +1,29 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 type SettingItem = {
   id: string;
   label: string;
-  route: `/hidden/settings/${string}`;
+  route: `/hidden/setting/${string}`;
 };
 
 const settings: SettingItem[] = [
-  { id: "1", label: "Account", route: "/hidden/settings/accountSetting" },
+  { id: "1", label: "Tài khoản", route: "/hidden/setting/accountSetting" },
   {
     id: "2",
-    label: "Data-saving and offline",
-    route: "/hidden/settings/dataSavingSetting",
+    label: "Tiết kiệm dữ liệu và ngoại tuyến",
+    route: "/hidden/setting/dataSavingSetting",
   },
-  { id: "3", label: "Playback", route: "/hidden/settings/playbackSetting" },
-  { id: "4", label: "Media quality", route: "/hidden/settings/qualitySetting" },
-  { id: "5", label: "About", route: "/hidden/settings/aboutSetting" },
+  { id: "3", label: "Phát lại", route: "/hidden/setting/playbackSetting" },
+  { id: "4", label: "Chất lượng âm thanh", route: "/hidden/setting/qualitySetting" },
+  { id: "5", label: "Về chúng tôi", route: "/hidden/setting/aboutSetting" },
 ];
 
 export default function SettingsScreen() {
@@ -36,7 +36,7 @@ export default function SettingsScreen() {
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="chevron-back" size={24} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Settings</Text>
+        <Text style={styles.headerTitle}>Cài đặt</Text>
         <View style={{ width: 24 }} />
       </View>
 
@@ -60,9 +60,9 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     paddingTop: 60,
     paddingHorizontal: 16,
+    backgroundColor: "black", // Đã là màu đen
   },
   header: {
     flexDirection: "row",
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#000",
+    color: "white", // đổi từ #000 sang trắng
   },
   profileContainer: {
     flexDirection: "row",
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#000",
+    color: "white", // đổi từ #000
   },
   profileLink: {
     color: "#aaa",
@@ -100,10 +100,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 18,
     borderBottomWidth: 1,
-    borderBottomColor: "#000",
+    borderBottomColor: "#333", // đổi từ #000 để phân cách nhẹ nhàng hơn
   },
   itemText: {
     fontSize: 16,
-    color: "#000",
+    color: "white", // đổi từ #000
   },
 });

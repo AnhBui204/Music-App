@@ -8,17 +8,27 @@
       "phone": "0000000000",
       "password": "123456",
       "plan": "Lifetime",
-      "createdAt": "2024-01-01T00:00:00Z"
+      "createdAt": "2024-01-01T00:00:00Z",
+      "stats": {
+        "playlists": 10,
+        "followers": 200,
+        "following": 150
+      }
     },
     {
       "id": "7893",
-      "username": "khanhluan",
+      "username": "Khánh Luân",
       "name": "Khánh Luân",
       "email": "khanhluan0501@gmail.com",
       "phone": "0845678912",
       "password": "14061999tzuyu",
       "plan": "Premium",
-      "createdAt": "2025-06-10T16:58:32.886Z"
+      "createdAt": "2025-06-10T16:58:32.886Z",
+      "stats": {
+        "playlists": 10,
+        "followers": 200,
+        "following": 150
+      }
     },
     {
       "id": "62e7",
@@ -28,7 +38,12 @@
       "phone": "0858748552",
       "password": "23456",
       "plan": "Free",
-      "createdAt": "2025-06-11T14:44:39.261Z"
+      "createdAt": "2025-06-11T14:44:39.261Z",
+      "stats": {
+        "playlists": 10,
+        "followers": 200,
+        "following": 150
+      }
     },
     {
       "id": "4929",
@@ -38,7 +53,12 @@
       "phone": "0123456789",
       "password": "123456",
       "plan": "Premium",
-      "createdAt": "2025-06-23T03:18:31.902Z"
+      "createdAt": "2025-06-23T03:18:31.902Z",
+      "stats": {
+        "playlists": 10,
+        "followers": 200,
+        "following": 150
+      }
     }
   ],
   "favorites": [
@@ -50,15 +70,6 @@
       "image": "ghequa.png",
       "audioUrl": "ghequa.mp3",
       "userId": "4929"
-    },
-    {
-      "id": "4",
-      "title": "Bên Trên Tầng Lầu",
-      "artist": "Tăng Duy Tân",
-      "genre": "Pop",
-      "image": "bentrentanglau.png",
-      "audioUrl": "bentrentanglau.mp3",
-      "userId": "7893"
     },
     {
       "id": "5",
@@ -141,6 +152,15 @@
       "audioUrl": "bentrentanglau.mp3",
       "userId": "4929",
       "imageKey": "bentrentanglau.png"
+    },
+    {
+      "id": "101",
+      "title": "Chúng Ta Của Hiện Tại",
+      "artist": "Sơn Tùng M-TP",
+      "audioUrl": "ctacuahientai.mp3",
+      "image": "mtp.png",
+      "userId": "7893",
+      "imageKey": "mtp.png"
     }
   ],
   "savedAlbums": [
@@ -230,6 +250,34 @@
       "id": "5",
       "title": "Remix Hot",
       "image": "remix.png"
+    }
+  ],
+  "userPlaylists": [
+    {
+      "id": "pl-1",
+      "userId": "7893",
+      "name": "Những bài hát chill",
+      "description": "Tuyển tập những bài hát chill yêu thích.",
+      "songIds": [
+        "1",
+        "3",
+        "4",
+        "8",
+        "7"
+      ],
+      "createdAt": "2025-07-21T10:00:00.000Z"
+    },
+    {
+      "id": "pl-2",
+      "userId": "4929",
+      "name": "Nhạc remix hot",
+      "description": "Playlist remix cực sung!",
+      "songIds": [
+        "2",
+        "5",
+        "6"
+      ],
+      "createdAt": "2025-07-21T10:10:00.000Z"
     }
   ],
   "recommendedSongs": [

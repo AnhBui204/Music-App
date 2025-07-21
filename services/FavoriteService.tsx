@@ -1,7 +1,8 @@
 // services/FavoriteService.ts
 import axios from 'axios';
 
-const API = 'http://172.16.0.206:4000';
+// const API = 'http://172.16.0.206:4000';
+const API = 'http://192.168.106.184:4000';
 
 const FavoriteService = {
   getFavorites: () => axios.get(`${API}/favorites`),

@@ -2,17 +2,13 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "jsx": "react-jsx",            // ✅ JSX tự động (cho React 17+)
-    "esModuleInterop": true,       // ✅ Cho phép import module theo kiểu ES6
-    "moduleResolution": "node",    // ✅ Giúp resolve module đúng cách
+    "jsx": "react-jsx", // ✅ JSX tự động (cho React 17+)
+    "esModuleInterop": true, // ✅ Cho phép import module theo kiểu ES6
+    "moduleResolution": "node", // ✅ Giúp resolve module đúng cách
+    "resolveJsonModule": true,
     "paths": {
       "@/*": ["./*"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-  ]
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }
