@@ -1,9 +1,8 @@
-// file components/Favorite/PlayScreen.tsx
+// components/Favorite/PlayScreen.tsx
 import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
-import { Audio } from "expo-av";
 import { router } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     Animated,
     Easing,
@@ -17,45 +16,7 @@ import {
 import { useStats } from "./StatsContext"; // Assuming you have a StatsContext for play count
 
 import images from "@/constants/Images";
-import MusicService from "@/services/MusicService";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFavorites } from './FavoritesContext';
-
-const audioFiles: { [key: string]: any } = {
-    '3107.mp3': require('../../assets/audio/3107.mp3'),
-    'yeudongkhoqua.mp3': require('../../assets/audio/yeudongkhoqua.mp3'),
-    'ghequa.mp3': require('../../assets/audio/ghequa.mp3'),
-    'bentrentanglau.mp3': require('../../assets/audio/bentrentanglau.mp3'),
-    'saigondaulongqua.mp3': require('../../assets/audio/saigondaulongqua.mp3'),
-    'yeu5.mp3': require('../../assets/audio/yeu5.mp3'),
-    'emgioi.mp3': require('../../assets/audio/emgioi.mp3'),
-    'coem.mp3': require('../../assets/audio/coem.mp3'),
-    'ctacuahientai.mp3': require('../../assets/audio/ctacuahientai.mp3'),
-    'tung.mp3': require('../../assets/audio/tung.mp3'),
-    'khunglong.mp3': require('../../assets/audio/khunglong.mp3'),
-    'traochoanh.mp3': require('../../assets/audio/traochoanh.mp3'),
-    'thichemhoinhieu.mp3': require('../../assets/audio/thichemhoinhieu.mp3'),
-    'lunglo.mp3': require('../../assets/audio/lunglo.mp3'),
-    'cafe.mp3': require('../../assets/audio/cafe.mp3'),
-    'chimsau.mp3': require('../../assets/audio/chimsau.mp3'),
-    'truylung.mp3': require('../../assets/audio/truylung.mp3'),
-    'anhdalacvao.mp3': require('../../assets/audio/anhdalacvao.mp3'),
-    'simplelove.mp3': require('../../assets/audio/simplelove.mp3'),
-    'tet.mp3': require('../../assets/audio/tet.mp3'),
-    'dauodaynay.mp3': require('../../assets/audio/dauodaynay.mp3'),
-    'duaemvenha.mp3': require('../../assets/audio/duaemvenha.mp3'),
-    'tutinh2.mp3': require('../../assets/audio/tutinh2.mp3'),
-    'motdem.mp3': require('../../assets/audio/motdem.mp3'),
-    'seetinh.mp3': require('../../assets/audio/seetinh.mp3'),
-    'emla.mp3': require('../../assets/audio/emla.mp3'),
-    'phiasau.mp3': require('../../assets/audio/phiasau.mp3'),
-    'lalung.mp3': require('../../assets/audio/lalung.mp3'),
-    'ruou.mp3': require('../../assets/audio/ruou.mp3'),
-    'neulucdo.mp3': require('../../assets/audio/neulucdo.mp3'),
-    'yeuladay.mp3': require('../../assets/audio/yeuladay.mp3'),
-    'hong.mp3': require('../../assets/audio/hong.mp3'),
-};
-
+import { useMusicPlayer } from "./MusicPlayerContext";
 
 const IMAGES = {
     cdDisk: require("../../assets/images/cd_disk.png"),
@@ -68,65 +29,48 @@ const PLAY_MODES = {
 };
 
 type Props = {
-    params: any;
+    params?: any; // Thêm ? để optional
 };
 
 const PlayScreen = ({ params }: Props) => {
-    const song = typeof params.song === 'string' ? JSON.parse(params.song) : params.song;
-    const { incrementPlayCount } = useStats();
-    const [user, setUser] = useState(null);
-    const { favoriteIds, addFavorite, removeFavorite } = useFavorites();
+    // Xử lý an toàn khi params có thể undefined
+    const song = params?.song ? (typeof params.song === 'string' ? JSON.parse(params.song) : params.song) : null;
+    const { incrementPlayCount } = useStats() as any;
+    
+    // Sử dụng MusicPlayerContext
+    const { 
+        currentSong, 
+        isPlaying, 
+        songs, 
+        playTrack, 
+        togglePlay, 
+        nextTrack, 
+        previousTrack,
+        position,
+        duration,
+        isFavorite,
+        toggleFavorite
+    } = useMusicPlayer();
 
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [position, setPosition] = useState(0);
-    const [duration, setDuration] = useState(0);
     const [mode, setMode] = useState(PLAY_MODES.REPEAT_ONE);
-    const isLiked = useMemo(() => favoriteIds.includes(song.id), [favoriteIds, song]);
-    const [currentSong, setCurrentSong] = useState(song);
-    const [songs, setSongs] = useState([]);
-
-    const soundRef = useRef(null);
     const spinValue = useRef(new Animated.Value(0)).current;
-    const rotationRef = useRef(null);
+    const rotationRef = useRef<any>(null);
 
     useEffect(() => {
-        const fetchUser = async () => {
-            const storedUser = await AsyncStorage.getItem('user');
-            const userStored = storedUser ? JSON.parse(storedUser) : null;
-            setUser(userStored);
-        };
-
-        fetchUser();
-
-        const getAllSongs = async () => {
-            try {
-                const songs = await MusicService.getAllSongs();
-                setSongs(songs);
-            } catch (error) {
-                console.error("Lỗi tải danh sách bài hát:", error);
-            }
-        };
-
-        getAllSongs();
-
-    }, []);
+        // Logic được cập nhật:
+        // - Nếu có song từ params và không có bài nào đang phát -> phát bài từ params
+        // - Nếu không có song từ params -> chỉ hiển thị bài đang phát hiện tại (nếu có)
+        // - Nếu cả hai đều không có -> hiển thị "Chọn một bài hát để phát"
+        if (song && !currentSong) {
+            playTrack(song);
+        }
+        // Không cần làm gì nếu không có song từ params - chỉ hiển thị currentSong hiện tại
+    }, [song, currentSong, playTrack]);
 
     const spin = spinValue.interpolate({
         inputRange: [0, 1],
         outputRange: ['0deg', '360deg'],
     });
-
-    useEffect(() => {
-        if (song) {
-            handleSongSelect(song);
-        }
-
-        return () => {
-            if (soundRef.current) {
-                soundRef.current.unloadAsync();
-            }
-        };
-    }, []);
 
     useEffect(() => {
         if (isPlaying) {
@@ -135,95 +79,6 @@ const PlayScreen = ({ params }: Props) => {
             rotationRef.current.stop();
         }
     }, [isPlaying]);
-
-
-
-    const loadAudio = async (songToLoad) => {
-        try {
-            if (soundRef.current) {
-                await soundRef.current.stopAsync();
-                await soundRef.current.unloadAsync();
-                soundRef.current.setOnPlaybackStatusUpdate(null);
-                soundRef.current = null;
-            }
-
-            const file = songToLoad.audioUrl;
-            const soundAsset = audioFiles[file];
-            const { sound, status } = await Audio.Sound.createAsync(
-                soundAsset,
-                { shouldPlay: true },
-                onPlaybackStatusUpdate
-            );
-
-            soundRef.current = sound;
-            setDuration(status.durationMillis);
-            setIsPlaying(true);
-        } catch (error) {
-            console.error("Lỗi load nhạc:", error);
-        }
-    };
-
-
-    const handleSongSelect = async (newSong) => {
-        if (soundRef.current) {
-            await soundRef.current.stopAsync();
-            await soundRef.current.unloadAsync();
-            soundRef.current.setOnPlaybackStatusUpdate(null);
-            soundRef.current = null;
-        }
-
-        setCurrentSong(newSong);
-        setPosition(0);
-        incrementPlayCount(newSong.title);
-        await loadAudio(newSong); // truyền trực tiếp newSong
-    };
-
-
-    const onPlaybackStatusUpdate = status => {
-        if (status.isLoaded) {
-            setPosition(status.positionMillis);
-            setDuration(status.durationMillis);
-            if (status.didJustFinish) {
-                handleTrackEnd();
-            }
-        }
-    };
-
-    const togglePlay = async () => {
-        if (!soundRef.current) return;
-        const status = await soundRef.current.getStatusAsync();
-        if (status.isPlaying) {
-            await soundRef.current.pauseAsync();
-            setIsPlaying(false);
-        } else {
-            await soundRef.current.playAsync();
-            setIsPlaying(true);
-        }
-    };
-
-    const handleTrackEnd = async () => {
-        switch (mode) {
-            case PLAY_MODES.REPEAT_ONE:
-                await soundRef.current.setPositionAsync(0);
-                await soundRef.current.playAsync();
-                break;
-            case PLAY_MODES.REPEAT_ALL:
-                skipToNextSong();
-                break;
-            case PLAY_MODES.SHUFFLE:
-                const randomIndex = Math.floor(Math.random() * songs.length);
-                handleSongSelect(songs[randomIndex]);
-                break;
-        }
-    };
-
-    const toggleMode = () => {
-        setMode((prev) => {
-            if (prev === PLAY_MODES.REPEAT_ALL) return PLAY_MODES.REPEAT_ONE;
-            if (prev === PLAY_MODES.REPEAT_ONE) return PLAY_MODES.SHUFFLE;
-            return PLAY_MODES.REPEAT_ALL;
-        });
-    };
 
     const rotateDisc = () => {
         rotationRef.current = Animated.loop(
@@ -237,24 +92,36 @@ const PlayScreen = ({ params }: Props) => {
         rotationRef.current.start();
     };
 
-    const formatTime = ms => {
+    const formatTime = (ms: number) => {
         const totalSeconds = Math.floor(ms / 1000);
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
         return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
     };
 
-    const skipToPreviousSong = () => {
-        const currentIndex = songs.findIndex(song => song.id === currentSong.id);
-        let newIndex = currentIndex <= 0 ? songs.length - 1 : currentIndex - 1;
-        handleSongSelect(songs[newIndex]);
+    const toggleMode = () => {
+        setMode((prev) => {
+            if (prev === PLAY_MODES.REPEAT_ALL) return PLAY_MODES.REPEAT_ONE;
+            if (prev === PLAY_MODES.REPEAT_ONE) return PLAY_MODES.SHUFFLE;
+            return PLAY_MODES.REPEAT_ALL;
+        });
     };
 
-    const skipToNextSong = () => {
-        const currentIndex = songs.findIndex(song => song.id === currentSong.id);
-        let newIndex = currentIndex >= songs.length - 1 ? 0 : currentIndex + 1;
-        handleSongSelect(songs[newIndex]);
+    const handleSongSelect = (selectedSong: any) => {
+        playTrack(selectedSong);
+        if (incrementPlayCount) {
+            incrementPlayCount(selectedSong.title);
+        }
     };
+
+    // Nếu không có bài hát hiện tại, hiển thị loading
+    if (!currentSong) {
+        return (
+            <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+                <Text style={styles.headerTitle}>Chọn một bài hát để phát</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
@@ -282,16 +149,16 @@ const PlayScreen = ({ params }: Props) => {
             <View style={styles.progressBarWrapper}>
                 <Slider
                     minimumValue={0}
-                    maximumValue={duration}
-                    value={position}
-                    onSlidingComplete={val => soundRef.current.setPositionAsync(val)}
+                    maximumValue={duration || 1}
+                    value={position || 0}
+                    onSlidingComplete={() => {}} // Tạm thời disable seek
                     minimumTrackTintColor="#1DB954"
                     maximumTrackTintColor="#444"
                     thumbTintColor="#1DB954"
                 />
                 <View style={styles.timeRow}>
-                    <Text style={styles.timeText}>{formatTime(position)}</Text>
-                    <Text style={styles.timeText}>{formatTime(duration)}</Text>
+                    <Text style={styles.timeText}>{formatTime(position || 0)}</Text>
+                    <Text style={styles.timeText}>{formatTime(duration || 0)}</Text>
                 </View>
             </View>
 
@@ -307,7 +174,7 @@ const PlayScreen = ({ params }: Props) => {
                     />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={skipToPreviousSong}>
+                <TouchableOpacity onPress={previousTrack}>
                     <Ionicons name="play-skip-back" size={34} color="#bbb" />
                 </TouchableOpacity>
 
@@ -315,33 +182,24 @@ const PlayScreen = ({ params }: Props) => {
                     <Ionicons name={isPlaying ? "pause" : "play"} size={40} color="#000" />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={skipToNextSong}>
+                <TouchableOpacity onPress={nextTrack}>
                     <Ionicons name="play-skip-forward" size={34} color="#bbb" />
                 </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() =>
-                        favoriteIds.includes(currentSong.id)
-                            ? removeFavorite(currentSong.id, user.id)
-                            : addFavorite(currentSong, user.id)
-                    }
-                >
+
+                <TouchableOpacity onPress={toggleFavorite}>
                     <FontAwesome
-                        name={favoriteIds.includes(currentSong.id) ? "heart" : "heart-o"}
+                        name={isFavorite ? "heart" : "heart-o"}
                         size={24}
-                        color={favoriteIds.includes(currentSong.id) ? "#1DB954" : "#fff"}
+                        color={isFavorite ? "#1DB954" : "#fff"}
                     />
                 </TouchableOpacity>
-
-
-
-
             </View>
 
             <View style={styles.songListContainer}>
                 <Text style={styles.listTitle}>Danh sách phát</Text>
                 <FlatList
                     data={songs}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item, index) => `playlist-${(item as any).id}-${index}`}
                     renderItem={({ item }) => (
                         <TouchableOpacity
                             style={[

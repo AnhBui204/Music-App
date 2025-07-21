@@ -43,24 +43,6 @@
   ],
   "favorites": [
     {
-      "id": "1",
-      "title": "3107",
-      "artist": "Duongg, Nâu",
-      "genre": "Pop",
-      "image": "3107.png",
-      "audioUrl": "3107.mp3",
-      "userId": "4929"
-    },
-    {
-      "id": "2",
-      "title": "Chạy Về Khóc Với Anh",
-      "artist": "ERIK",
-      "genre": "Ballad",
-      "image": "chayvekhovoianh.png",
-      "audioUrl": "yeudongkhoqua.mp3",
-      "userId": "4929"
-    },
-    {
       "id": "3",
       "title": "Ghé Qua",
       "artist": "Dick x Tofu x PC",
@@ -113,15 +95,6 @@
       "userId": "4929",
       "imageKey": "mtp.png",
       "audioUrl": "ctacuahientai.mp3"
-    },
-    {
-      "id": "106",
-      "title": "Ai Chung Tình Được Mãi",
-      "artist": "Đinh Tùng Huy",
-      "image": "tung.png",
-      "userId": "4929",
-      "imageKey": "tung.png",
-      "audioUrl": "tung.mp3"
     },
     {
       "id": "104",

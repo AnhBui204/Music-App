@@ -1,45 +1,40 @@
+import images from "@/constants/Images"; // Sử dụng images mapping từ constants
 import { Ionicons } from '@expo/vector-icons';
 import {
-    Dimensions,
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
+  Dimensions,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
 import { useStats } from './StatsContext';
 
 const screenWidth = Dimensions.get('window').width;
 
-// Image map dùng ảnh tĩnh
-const IMAGE_MAP = {
-  cover: require('../../assets/images/cover1.png'),
-  cover1: require('../../assets/images/cover1.png'),
-  cdDisk: require('../../assets/images/cd_disk.png'),
-};
-
 const Statistics = () => {
   const { playCounts } = useStats();
 
   const totalSongs = Object.keys(playCounts).length;
   const totalPlays = Object.values(playCounts).reduce(
-    (sum, val) => sum + val.count,
+    (sum: number, val: any) => sum + val.count,
     0
   );
   const mostPlayed =
-    Object.entries(playCounts).sort((a, b) => b[1].count - a[1].count)[0]?.[0] ||
+    Object.entries(playCounts).sort((a: any, b: any) => b[1].count - a[1].count)[0]?.[0] ||
     'Chưa có';
 
   // Tổng số lượt theo genre
-  const genreMap = {};
-  Object.values(playCounts).forEach(({ genre, count }) => {
+  const genreMap: any = {};
+  Object.values(playCounts).forEach((data: any) => {
+    const { genre, count } = data;
     genreMap[genre] = (genreMap[genre] || 0) + count;
   });
 
   // Top 3 bài
   const topSongs = Object.entries(playCounts)
-    .sort((a, b) => b[1].count - a[1].count)
+    .sort((a: any, b: any) => b[1].count - a[1].count)
     .slice(0, 3);
 
   return (
@@ -81,6 +76,7 @@ const Statistics = () => {
         width={screenWidth - 30}
         height={230}
         yAxisLabel=""
+        yAxisSuffix="" // Thêm yAxisSuffix bắt buộc
         chartConfig={{
           backgroundColor: '#1e1e1e',
           backgroundGradientFrom: '#1e1e1e',
@@ -102,8 +98,8 @@ const Statistics = () => {
         <View style={styles.underline} />
       </View>
       <View style={styles.topContainer}>
-        {topSongs.map(([title, data], index) => {
-          const songImage = IMAGE_MAP[data.imageKey] || IMAGE_MAP['cover'];
+        {topSongs.map(([title, data]: any, index) => {
+          const songImage = images[(data as any).imageKey] || images.cover;
           const isTop1 = index === 0;
 
           return (
@@ -118,11 +114,11 @@ const Statistics = () => {
                 </Text>
                 <Text style={styles.songTitleTop}>{title}</Text>
                 <Text style={styles.songArtist}>
-                  {data.artist || 'Không rõ nghệ sĩ'}
+                  {(data as any).artist || 'Không rõ nghệ sĩ'}
                 </Text>
                 <Text style={styles.songSubtitle}>
                   <Ionicons name="headset" size={16} color="#1DB954" />{' '}
-                  {data.count} lượt nghe
+                  {(data as any).count} lượt nghe
                 </Text>
               </View>
 

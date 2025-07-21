@@ -1,5 +1,6 @@
 // components/Favorite/FavoritesContext.tsx
-import { createContext, useContext, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 import FavoriteService from '../../services/FavoriteService';
 
@@ -7,6 +8,25 @@ const FavoritesContext = createContext();
 
 export const FavoritesProvider = ({ children }) => {
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
+
+  // Load favorites từ server khi component mount
+  useEffect(() => {
+    loadFavoriteIds();
+  }, []);
+
+  const loadFavoriteIds = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem('user');
+      const user = storedUser ? JSON.parse(storedUser) : null;
+      if (!user) return;
+
+      const favorites = await FavoriteService.getFavoritesByUser(user.id);
+      const ids = favorites.map((fav: any) => fav.id);
+      setFavoriteIds(ids);
+    } catch (error) {
+      console.error('Error loading favorite ids:', error);
+    }
+  };
 
   const addFavorite = async (song: any, userId: string) => {
     try {
@@ -38,7 +58,7 @@ export const FavoritesProvider = ({ children }) => {
   };
 
   return (
-    <FavoritesContext.Provider value={{ favoriteIds, setFavoriteIds, addFavorite, removeFavorite }}>
+    <FavoritesContext.Provider value={{ favoriteIds, setFavoriteIds, addFavorite, removeFavorite, loadFavoriteIds }}>
       {children}
     </FavoritesContext.Provider>
   );
